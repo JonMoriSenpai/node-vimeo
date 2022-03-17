@@ -20,15 +20,10 @@ class utils {
       return undefined
     try {
       let rawResponse
-      switch (axiosMethod?.toLowerCase()?.trim()) {
-        case 'get':
-          rawResponse = await Axios.get(rawApiUrl, { ...apiOptions })
-        case 'post':
-          rawResponse = await Axios.post(rawApiUrl, { ...apiOptions })
-        default:
-          return undefined
-      }
-
+      if (axiosMethod?.toLowerCase()?.trim() === 'get')
+        rawResponse = await Axios.get(rawApiUrl, { ...apiOptions })
+      else if (axiosMethod?.toLowerCase()?.trim() === 'post')
+        rawResponse = await Axios.post(rawApiUrl, { ...apiOptions })
       if (
         !(
           rawResponse &&
