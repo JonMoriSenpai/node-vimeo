@@ -18,7 +18,7 @@ class vimeo {
   constructor(
     rawResponse,
     __scrapperOptions,
-    parseType = 'html',
+    parseType = 'playerhtml',
     extraFillters = {},
   ) {
     this.#__private = {
@@ -42,7 +42,7 @@ class vimeo {
       return false
     }
   }
-  #__patch(rawResponse, parseType = 'html', returnOnly = false) {
+  #__patch(rawResponse, parseType = 'playerhtml', returnOnly = false) {
     if (!(rawResponse && typeof rawResponse === 'string' && rawResponse !== ''))
       return undefined
     switch (parseType?.toLowerCase()?.trim()) {
@@ -129,10 +129,19 @@ class vimeo {
       return utils.__errorHandling(rawError)
     }
   }
+  /**
+   *
+   * @param {string} rawUrl raw Vimeo Video Url for the Extraction
+   * @param {*} __scrapperOptions scrapping Options for 
+   * @returns
+   */
   static async __htmlFetch(rawUrl, __scrapperOptions) {
     try {
       if (!(rawUrl && typeof rawUrl === 'string' && rawUrl !== ''))
         return undefined
+      rawUrl = rawUrl?.includes('player.vimeo.com')
+        ? rawUrl
+        : vimeo.__playerUrl + rawUrl?.split('/')?.filter(Boolean)?.pop()
       let rawResponse = await utils.__rawfetchBody(
         rawUrl,
         __scrapperOptions?.apiOptions,
@@ -141,7 +150,7 @@ class vimeo {
         !(rawResponse && typeof rawResponse === 'string' && rawResponse !== '')
       )
         return undefined
-      let rawVimeo = new vimeo(rawResponse, __scrapperOptions, 'html')
+      let rawVimeo = new vimeo(rawResponse, __scrapperOptions)
       if (__scrapperOptions?.fetchStreamReadable)
         await rawVimeo.getStreamReadable()
       return rawVimeo
