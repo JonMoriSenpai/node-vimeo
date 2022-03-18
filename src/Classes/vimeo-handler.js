@@ -1,5 +1,4 @@
 const utils = require('../Utils/__defaultUtils.js')
-const vimeoHandler = require('vimeo').Vimeo
 const https = require('https')
 const http = require('http')
 const { Readable } = require('stream')
