@@ -6,7 +6,10 @@ const { Readable } = require('stream')
 
 class vimeo {
   static __playerUrl = 'https://player.vimeo.com/video/'
-  static clientCredentials = {}
+  static __videoUrl = ''
+  static __vimeoRegex = [
+    /(http|https)?:\/\/(www\.|player\.)?vimeo\.com\/(?:channels\/(?:\w+\/)?|groups\/([^/]*)\/videos\/|video\/|)(\d+)(?:|\/\?)/,
+  ]
   #__private = {
     __raw: undefined,
     __scrapperOptions: undefined,
@@ -27,9 +30,6 @@ class vimeo {
     }
     this.#__patch(rawResponse, parseType, false)
   }
-  static __vimeoRegex = [
-    /(http|https)?:\/\/(www\.|player\.)?vimeo\.com\/(?:channels\/(?:\w+\/)?|groups\/([^/]*)\/videos\/|video\/|)(\d+)(?:|\/\?)/,
-  ]
   static __test(rawUrl, returnRegex = false) {
     try {
       if (!(rawUrl && typeof rawUrl === 'string' && rawUrl !== '')) return false
@@ -47,7 +47,7 @@ class vimeo {
     if (!(rawResponse && typeof rawResponse === 'string' && rawResponse !== ''))
       return undefined
     switch (parseType?.toLowerCase()?.trim()) {
-      case 'html':
+      case 'playerhtml':
         let rawJsonData = JSON.parse(
           rawResponse
             ?.split('<script> (function(document, player) { var config = ')?.[1]
@@ -70,7 +70,7 @@ class vimeo {
           ...rawJsonData?.video,
           stream: __rawStreamData,
         }
-      case 'client':
+      case 'html':
     }
   }
   /**
@@ -125,84 +125,6 @@ class vimeo {
             }
           resolve(response)
         })
-      })
-    } catch (rawError) {
-      return utils.__errorHandling(rawError)
-    }
-  }
-  static async __clientManager(
-    clientCredentials = vimeo.clientCredentials,
-    authentication = false,
-  ) {
-    try {
-      let vimeoClient = new vimeoHandler(
-        clientCredentials?.clientId,
-        clientCredentials?.clientSecret,
-      )
-      if (!clientCredentials?.clientAccessToken || !authentication)
-        clientCredentials?.clientAccessToken = await new Promise((resolve) => {
-          vimeoClient.generateClientCredentials(
-            clientCredentials?.tokenScopes ??
-              vimeo.#__clientCredentials?.tokenScopes,
-            (rawError, response) => {
-              if (rawError) throw rawError
-              else resolve(response?.access_token)
-            },
-          )
-        })
-      else
-        clientCredentials?.clientAccessToken = await new Promise((resolve) => {
-          vimeoClient.accessToken(
-            clientCredentials?.tokenCode,
-            clientCredentials?.redirectUri,
-            (err, response) => {
-              if (err) return response.end('error\n' + err)
-              else if (response.access_token) resolve(response.access_token)
-            },
-          )
-        })
-      if (
-        !(
-          clientCredentials?.clientAccessToken &&
-          typeof clientCredentials?.clientAccessToken === 'string' &&
-          clientCredentials?.clientAccessToken !== ''
-        )
-      )
-        return undefined
-      else vimeoClient.setAccessToken(clientCredentials?.clientAccessToken)
-      this.#__private.__vimeoClient = vimeoClient
-      return vimeoClient
-    } catch (rawError) {
-      return utils.__errorHandling(rawError)
-    }
-  }
-  async #__privateRequestHandler(
-    apiPath,
-    apiMethod = 'GET',
-    requestQueryParams = {},
-  ) {
-    try {
-      if (
-        !(this.#__private?.__type !== 'html' && this.#__private.__vimeoClient)
-      )
-        return undefined
-      return await new Promise((resolve) => {
-        this.#__private?.__vimeoClient?.request(
-          {
-            method: apiMethod ?? 'GET',
-            path: apiPath ?? '',
-            query: requestQueryParams,
-          },
-          (rawError, rawBody, statusCode, rawHeaders) => {
-            if (rawError) throw new Error(rawError)
-            else if ([200, '200']?.includes(statusCode))
-              throw new Error(
-                'Vimeo Client Error : Invalid Response Receieved with Status Code -> ' +
-                  statusCode,
-              )
-            else resolve(rawBody)
-          },
-        )
       })
     } catch (rawError) {
       return utils.__errorHandling(rawError)
