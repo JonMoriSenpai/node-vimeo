@@ -2,11 +2,6 @@ const Axios = require('axios').default
 const fileSystem = require('fs')
 const path = require('path')
 
-String.prototype.replaceAll = function (search, replacement) {
-  var target = this
-  return target.replace(new RegExp(search, 'g'), replacement)
-}
-
 class utils {
   static async __rawfetchBody(
     rawApiUrl,
