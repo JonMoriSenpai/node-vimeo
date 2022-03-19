@@ -5,7 +5,17 @@ const vimeo = require('./vimeo-player')
  * @class htmlVimeo -> Html Vimeo Handler Class for Handling Basic Un-Official Extraction and Parsing of Vimeo Video Metadata and Stream Readable
  */
 class htmlVimeo extends vimeo {
-  static async videoExtraction(rawUrl, __scrapperOptions) {
+  /**
+   * @static
+   * rawExtraction() -> Html 5 Player Fetch for Vimeo Url
+   * @param {string} rawUrl raw Vimeo Video Url for the Extraction
+   * @param {object} __scrapperOptions scrapping Options for raw Fetch Method
+   * @returns {Promise<vimeo>} Returns Instance of Vimeo with properties of Data
+   */
+  static async rawExtraction(
+    rawUrl,
+    __scrapperOptions = htmlVimeo.__scrapperOptions,
+  ) {
     if (
       !(
         rawUrl &&

@@ -7,21 +7,54 @@ const { Readable } = require('stream')
  * @class vimeo -> Vimeo Handler Class for Handling Basic Un-Official Extraction and Parsing of Vimeo Video Metadata and Stream Readable
  */
 class vimeo {
+  /**
+   * @static
+   * @property {object} __scrapperOptions Default HTML Scrapping and Parsing Options Compilation
+   */
+
   static __scrapperOptions = {
     htmlOptions: {},
     fetchOptions: { fetchStreamReadable: true },
     ignoreError: true,
   }
+
+  /**
+   * @static
+   * @property {string | "https://player.vimeo.com/video/" } __playerUrl Player URL for Extraction of Player Metada and Stream Metadata
+   */
+
   static __playerUrl = 'https://player.vimeo.com/video/'
+
+  /**
+   * @static
+   * @property {Regexp[]} __vimeoRegex Array of Vimeo Supported Regexes
+   */
+
   static __vimeoRegex = [
     /(http|https)?:\/\/(www\.|player\.)?vimeo\.com\/(?:channels\/(?:\w+\/)?|groups\/([^/]*)\/videos\/|video\/|)(\d+)(?:|\/\?)/,
   ]
+
+  /**
+   * @private
+   * @property {object} __private Prirvate Caches/Data for further Parsing and Memory Cache for Vimeo Constructor
+   */
   #__private = {
     __raw: undefined,
     __scrapperOptions: undefined,
     __rawExtra: undefined,
   }
-  constructor(rawResponse, __scrapperOptions, extraContents = {}) {
+
+  /**
+   * @constructor
+   * @param {string} rawResponse Response Body like in text or HTML Player's Source Code
+   * @param {object} __scrapperOptions scrapping Options for raw Fetch Method
+   * @param {object} extraContents Extra Contents for Merging for cache in "extra Cache"
+   */
+  constructor(
+    rawResponse,
+    __scrapperOptions = vimeo.__scrapperOptions,
+    extraContents = {},
+  ) {
     this.#__private = {
       __raw: rawResponse,
       __scrapperOptions: __scrapperOptions,
@@ -29,6 +62,14 @@ class vimeo {
     }
     this.#__patch(rawResponse, false, extraContents)
   }
+
+  /**
+   * @static
+   * __test() -> Regex Testing with respect to Arrays of Regex and Raw Url Provided
+   * @param {string} rawUrl raw url for checking if its Vimeo Video URL
+   * @param {boolean | 'false'} returnRegex Boolean Value for if return the residue or results
+   * @returns {boolean | RegExpMatchArray} returns Boolean on success and Regex match Array Data if its requested
+   */
   static __test(rawUrl, returnRegex = false) {
     try {
       if (!(rawUrl && typeof rawUrl === 'string' && rawUrl !== '')) return false
@@ -42,6 +83,15 @@ class vimeo {
       return false
     }
   }
+
+  /**
+   * @private
+   * #__patch() -> Patching Method for constructor Vimeo Handler
+   * @param {string} rawResponse Response Body like in text or HTML Player's Source Code
+   * @param {boolean | "false"} returnOnly Boolean value for exceptions of Parsing only method use
+   * @param {object} extraContents extra keys and values to merge/assign to the constructor on request
+   * @returns {object} Returns the parsed structured Data for if any use
+   */
   #__patch(rawResponse, returnOnly = false, extraContents = {}) {
     try {
       if (
@@ -83,10 +133,12 @@ class vimeo {
   }
   /**
    * method getStreamReadable() -> Fetch Stream Readable
-   * @param {string} fetchUrl Fetch Stream Url or normal Url
+   * @param {string} fetchUrl Fetch Stream Url or normal Vimeo Video Url
    * @returns {Promise<Readable>} Returns Stream for HTML5 Pages or Web Apps working on Stream Based or pipeing Stuff
    */
-  async getStreamReadable(fetchUrl = this.stream?.url) {
+  async getStreamReadable(
+    fetchUrl = this.stream?.url ?? this.url ?? this?.video_url,
+  ) {
     try {
       if (!(fetchUrl && typeof fetchUrl === 'string' && fetchUrl !== ''))
         throw new TypeError(
@@ -137,7 +189,8 @@ class vimeo {
     }
   }
   /**
-   * method __htmlFetch() -> Html 5 Player Fetch for Vimeo Url
+   * @static
+   * __htmlFetch() -> Html 5 Player Fetch for Vimeo Url
    * @param {string} rawUrl raw Vimeo Video Url for the Extraction
    * @param {object} __scrapperOptions scrapping Options for raw Fetch Method
    * @param {object} extraContents Extra Contents to be Added  if placed from Html file Parser
