@@ -3,9 +3,19 @@ const fileSystem = require('fs')
 const path = require('path')
 
 class utils {
+  /**
+   * @static __rawfetchBody() -> Fetch raw Body/Source Code of API Page in form of data or method based return response
+   * @param {string} rawApiUrl API Url or Normal HTML Page Url to be Fetched using Axios or Posted
+   * @param {object} htmlOptions api or html Options for Axios
+   * @param {string | void | 'data'} returnType Return Type/Key from Response
+   * @param {boolean | 'true'} ignoreError Error should be ignored ?
+   * @param {string | 'GET'} axiosMethod Axios method
+   * @param {object | void | string[] | object[]} filters Extra Options or Future based Data to be given
+   * @returns
+   */
   static async __rawfetchBody(
     rawApiUrl,
-    htmlOptions,
+    htmlOptions = {},
     returnType = 'data',
     ignoreError = true,
     axiosMethod = 'GET',
@@ -27,6 +37,7 @@ class utils {
         )
       )
         throw new Error('Invalid Response Fetched from Api Url')
+      else if (returnType === 'all') return rawResponse
       else return rawResponse?.[returnType ?? 'data']
     } catch (rawError) {
       if (ignoreError) return utils.__errorHandling(rawError)
@@ -89,7 +100,7 @@ class utils {
     }
     return true
   }
-  static __customParser(getVideoId) {
+  static __customParser(getVideoId, parseHTMLObjects) {
     if (
       getVideoId &&
       ['string', 'number'].includes(typeof getVideoId) &&
@@ -98,6 +109,8 @@ class utils {
       let rawVideoId = getVideoId?.split('/')?.filter(Boolean)?.pop()
       if (!(rawVideoId && !Number.isNaN(rawVideoId))) return undefined
       else return parseInt(rawVideoId)
+    } else if (parseHTMLObjects?.rawObject) {
+      
     } else return undefined
   }
 }
