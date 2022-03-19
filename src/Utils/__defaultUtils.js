@@ -10,7 +10,7 @@ String.prototype.replaceAll = function (search, replacement) {
 class utils {
   static async __rawfetchBody(
     rawApiUrl,
-    apiOptions,
+    htmlOptions,
     returnType = 'data',
     ignoreError = true,
     axiosMethod = 'GET',
@@ -21,9 +21,9 @@ class utils {
     try {
       let rawResponse
       if (axiosMethod?.toLowerCase()?.trim() === 'get')
-        rawResponse = await Axios.get(rawApiUrl, { ...apiOptions })
+        rawResponse = await Axios.get(rawApiUrl, { ...htmlOptions })
       else if (axiosMethod?.toLowerCase()?.trim() === 'post')
-        rawResponse = await Axios.post(rawApiUrl, { ...apiOptions })
+        rawResponse = await Axios.post(rawApiUrl, { ...htmlOptions })
       if (
         !(
           rawResponse &&
@@ -69,7 +69,10 @@ class utils {
     ) {
       fileSystem.appendFileSync(
         __cacheLocation,
-        `\n\n${new Date()} | ` +
+        ((fileSystem.readFileSync(__cacheLocation)?.length ?? 0) > 100
+          ? `\n\n`
+          : '') +
+          `${new Date()} | ` +
           `\n ErrorMessage: ${error?.message ?? `${error}`}\n ErrorStack: ${
             error?.stack ?? 'Unknown-Stack'
           }`,
@@ -85,6 +88,17 @@ class utils {
       )
     }
     return true
+  }
+  static __customParser(getVideoId) {
+    if (
+      getVideoId &&
+      ['string', 'number'].includes(typeof getVideoId) &&
+      getVideoId !== ''
+    ) {
+      let rawVideoId = getVideoId?.split('/')?.filter(Boolean)?.pop()
+      if (!(rawVideoId && !Number.isNaN(rawVideoId))) return undefined
+      else return parseInt(rawVideoId)
+    } else return undefined
   }
 }
 

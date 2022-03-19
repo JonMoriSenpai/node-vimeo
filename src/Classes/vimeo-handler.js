@@ -4,8 +4,12 @@ const http = require('http')
 const { Readable } = require('stream')
 
 class vimeo {
+  static __scrapperOptions = {
+    htmlOptions: {},
+    fetchOptions: { fetchStreamReadable: true },
+    ignoreError: true,
+  }
   static __playerUrl = 'https://player.vimeo.com/video/'
-  static __videoUrl = ''
   static __vimeoRegex = [
     /(http|https)?:\/\/(www\.|player\.)?vimeo\.com\/(?:channels\/(?:\w+\/)?|groups\/([^/]*)\/videos\/|video\/|)(\d+)(?:|\/\?)/,
   ]
@@ -13,7 +17,6 @@ class vimeo {
     __raw: undefined,
     __scrapperOptions: undefined,
     __type: undefined,
-    __vimeoClient: undefined,
   }
   constructor(
     rawResponse,
@@ -61,25 +64,22 @@ class vimeo {
             stream?.url !== '',
         )
         if (!returnOnly)
-          this.videoMetadata = {
+          Object.assign(this, {
             ...rawJsonData?.video,
             stream: __rawStreamData,
-          }
+          })
         return {
           ...rawJsonData?.video,
           stream: __rawStreamData,
         }
-      case 'html':
     }
   }
   /**
    * method getStreamReadable() -> Fetch Stream Readable
-   * @param {string} fetchUrl
+   * @param {string} fetchUrl Fetch Stream Url or normal Url
    * @returns {Promise<Readable>}
    */
-  async getStreamReadable(
-    fetchUrl = this.videoMetadata?.stream?.url ?? this.stream?.url,
-  ) {
+  async getStreamReadable(fetchUrl = this.stream?.url) {
     try {
       if (!(fetchUrl && typeof fetchUrl === 'string' && fetchUrl !== ''))
         return undefined
@@ -90,12 +90,10 @@ class vimeo {
           fetchUrl?.startsWith('http')
         )
       ) {
-        if (!fetchUrl?.split('/')?.filter(Boolean)?.pop() ?? this.videoid)
-          return undefined
+        if (!utils.__customParser(fetchUrl)) return undefined
         let rawResponse = await utils.__rawfetchBody(
-          vimeo.__playerUrl +
-            (fetchUrl?.split('/')?.filter(Boolean)?.pop() ?? this.videoid),
-          this.#__private?.__scrapperOptions?.apiOptions,
+          vimeo.__playerUrl + (utils.__customParser(fetchUrl) ?? this.videoid),
+          this.#__private?.__scrapperOptions?.htmlOptions,
         )
         if (
           !(
@@ -112,16 +110,10 @@ class vimeo {
       const rawDownloadFunction = fetchUrl?.startsWith('https') ? https : http
       return new Promise((resolve) => {
         rawDownloadFunction.get(fetchUrl, (response) => {
-          if (!this.stream)
-            this.videoMetadata = {
-              ...this.videoMetadata,
-              stream: { ...this.videoMetadata?.stream, buffer: response },
-            }
-          else
-            this.stream = {
-              ...this.stream,
-              buffer: response,
-            }
+          Object.assign(this.stream, {
+            ...this.stream,
+            buffer: response,
+          })
           resolve(response)
         })
       })
@@ -132,26 +124,41 @@ class vimeo {
   /**
    *
    * @param {string} rawUrl raw Vimeo Video Url for the Extraction
-   * @param {*} __scrapperOptions scrapping Options for 
-   * @returns
+   * @param {object} __scrapperOptions scrapping Options for raw Fetch Method
+   * @returns {Promise<vimeo>} Returns Instance of Vimeo with properties of Data
    */
-  static async __htmlFetch(rawUrl, __scrapperOptions) {
+  static async __htmlFetch(
+    rawUrl,
+    __scrapperOptions = vimeo.__scrapperOptions,
+  ) {
     try {
       if (!(rawUrl && typeof rawUrl === 'string' && rawUrl !== ''))
         return undefined
+      __scrapperOptions = {
+        ...vimeo.__scrapperOptions,
+        ...__scrapperOptions,
+        htmlOptions: {
+          ...vimeo.__scrapperOptions?.htmlOptions,
+          ...__scrapperOptions?.htmlOptions,
+        },
+        fetchOptions: {
+          ...vimeo.__scrapperOptions?.fetchOptions,
+          ...__scrapperOptions?.fetchOptions,
+        },
+      }
       rawUrl = rawUrl?.includes('player.vimeo.com')
         ? rawUrl
-        : vimeo.__playerUrl + rawUrl?.split('/')?.filter(Boolean)?.pop()
+        : vimeo.__playerUrl + utils.__customParser(rawUrl)
       let rawResponse = await utils.__rawfetchBody(
         rawUrl,
-        __scrapperOptions?.apiOptions,
+        __scrapperOptions?.htmlOptions,
       )
       if (
         !(rawResponse && typeof rawResponse === 'string' && rawResponse !== '')
       )
         return undefined
       let rawVimeo = new vimeo(rawResponse, __scrapperOptions)
-      if (__scrapperOptions?.fetchStreamReadable)
+      if (__scrapperOptions?.fetchOptions?.fetchStreamReadable)
         await rawVimeo.getStreamReadable()
       return rawVimeo
     } catch (rawError) {
@@ -164,9 +171,15 @@ class vimeo {
   }
   get videoid() {
     if (!this.url) return undefined
-    else return this.url?.split('/')?.filter(Boolean)?.pop()
+    else return utils.__customParser(this.url)
   }
 }
-vimeo.__htmlFetch('https://player.vimeo.com/video/246660563')
+new Promise(async () => {
+  console.log(
+    await vimeo.__htmlFetch('https://vimeo.com/246660563', {
+      fetchOptions: { fetchStreamReadable: true },
+    }),
+  )
+})
 
 module.exports = vimeo
