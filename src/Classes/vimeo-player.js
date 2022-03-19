@@ -132,7 +132,14 @@ class vimeo {
     __scrapperOptions = vimeo.__scrapperOptions,
   ) {
     try {
-      if (!(rawUrl && typeof rawUrl === 'string' && rawUrl !== ''))
+      if (
+        !(
+          rawUrl &&
+          typeof rawUrl === 'string' &&
+          rawUrl !== '' &&
+          utils.__customParser(rawUrl)
+        )
+      )
         return undefined
       __scrapperOptions = {
         ...vimeo.__scrapperOptions,
