@@ -1,21 +1,18 @@
 const utils = require('../Utils/__defaultUtils.js')
-const vimeo = require('./vimeo-player')
+const vimeoTrack = require('./vimeo-player')
 
 /**
  * @class htmlVimeo -> Html Vimeo Handler Class for Handling Basic Un-Official Extraction and Parsing of Vimeo Video Metadata and Stream Readable
  */
-class htmlVimeo extends vimeo {
+class htmlVimeo extends vimeoTrack {
   /**
    * @static
-   * rawExtraction() -> Html 5 Player Fetch for Vimeo Url
+   * html() -> Html 5 Player Fetch for Vimeo Url
    * @param {string} rawUrl raw Vimeo Video Url for the Extraction
    * @param {object} __scrapperOptions scrapping Options for raw Fetch Method
-   * @returns {Promise<vimeo>} Returns Instance of Vimeo with properties of Data
+   * @returns {Promise<vimeoTrack>} Returns Instance of Vimeo with properties of Data
    */
-  static async rawExtraction(
-    rawUrl,
-    __scrapperOptions = htmlVimeo.__scrapperOptions,
-  ) {
+  static async html(rawUrl, __scrapperOptions = htmlVimeo.__scrapperOptions) {
     if (
       !(
         rawUrl &&

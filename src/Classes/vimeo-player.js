@@ -4,9 +4,9 @@ const http = require('http')
 const { Readable } = require('stream')
 
 /**
- * @class vimeo -> Vimeo Handler Class for Handling Basic Un-Official Extraction and Parsing of Vimeo Video Metadata and Stream Readable
+ * @class vimeoTrack -> Vimeo Handler Class for Handling Basic Un-Official Extraction and Parsing of Vimeo Video Metadata and Stream Readable
  */
-class vimeo {
+class vimeoTrack {
   /**
    * @static
    * @property {object} __scrapperOptions Default HTML Scrapping and Parsing Options Compilation
@@ -52,7 +52,7 @@ class vimeo {
    */
   constructor(
     rawResponse,
-    __scrapperOptions = vimeo.__scrapperOptions,
+    __scrapperOptions = vimeoTrack.__scrapperOptions,
     extraContents = {},
   ) {
     this.#__private = {
@@ -74,11 +74,11 @@ class vimeo {
     try {
       if (!(rawUrl && typeof rawUrl === 'string' && rawUrl !== '')) return false
       return returnRegex &&
-        Boolean(vimeo.__vimeoRegex.find((regExp) => regExp.test(rawUrl)))
+        Boolean(vimeoTrack.__vimeoRegex.find((regExp) => regExp.test(rawUrl)))
         ? rawUrl?.match(
-            vimeo.__vimeoRegex.find((regExp) => rawUrl.match(regExp)),
+            vimeoTrack.__vimeoRegex.find((regExp) => rawUrl.match(regExp)),
           ) ?? false
-        : Boolean(vimeo.__vimeoRegex.find((regExp) => regExp.test(rawUrl)))
+        : Boolean(vimeoTrack.__vimeoRegex.find((regExp) => regExp.test(rawUrl)))
     } catch {
       return false
     }
@@ -132,11 +132,11 @@ class vimeo {
     }
   }
   /**
-   * method getStreamReadable() -> Fetch Stream Readable
+   * method getStream() -> Fetch Stream Readable
    * @param {string} fetchUrl Fetch Stream Url or normal Vimeo Video Url
    * @returns {Promise<Readable>} Returns Stream for HTML5 Pages or Web Apps working on Stream Based or pipeing Stuff
    */
-  async getStreamReadable(
+  async getStream(
     fetchUrl = this.stream?.url ?? this.url ?? this?.video_url,
   ) {
     try {
@@ -153,7 +153,8 @@ class vimeo {
       ) {
         if (!utils.__customParser(fetchUrl)) return undefined
         let rawResponse = await utils.__rawfetchBody(
-          vimeo.__playerUrl + (utils.__customParser(fetchUrl) ?? this.videoid),
+          vimeoTrack.__playerUrl +
+            (utils.__customParser(fetchUrl) ?? this.videoid),
           this.#__private?.__scrapperOptions?.htmlOptions,
         )
         if (
@@ -194,11 +195,11 @@ class vimeo {
    * @param {string} rawUrl raw Vimeo Video Url for the Extraction
    * @param {object} __scrapperOptions scrapping Options for raw Fetch Method
    * @param {object} extraContents Extra Contents to be Added  if placed from Html file Parser
-   * @returns {Promise<vimeo>} Returns Instance of Vimeo with properties of Data
+   * @returns {Promise<vimeoTrack>} Returns Instance of Vimeo with properties of Data
    */
   static async __htmlFetch(
     rawUrl,
-    __scrapperOptions = vimeo.__scrapperOptions,
+    __scrapperOptions = vimeoTrack.__scrapperOptions,
     extraContents = {},
   ) {
     try {
@@ -214,20 +215,20 @@ class vimeo {
           'Vimeo Internal Error : Invalid Vimeo Video Url is for Parsing and Extraction',
         )
       __scrapperOptions = {
-        ...vimeo.__scrapperOptions,
+        ...vimeoTrack.__scrapperOptions,
         ...__scrapperOptions,
         htmlOptions: {
-          ...vimeo.__scrapperOptions?.htmlOptions,
+          ...vimeoTrack.__scrapperOptions?.htmlOptions,
           ...__scrapperOptions?.htmlOptions,
         },
         fetchOptions: {
-          ...vimeo.__scrapperOptions?.fetchOptions,
+          ...vimeoTrack.__scrapperOptions?.fetchOptions,
           ...__scrapperOptions?.fetchOptions,
         },
       }
       rawUrl = rawUrl?.includes('player.vimeo.com')
         ? rawUrl
-        : vimeo.__playerUrl + utils.__customParser(rawUrl)
+        : vimeoTrack.__playerUrl + utils.__customParser(rawUrl)
       let rawResponse = await utils.__rawfetchBody(
         rawUrl,
         __scrapperOptions?.htmlOptions,
@@ -238,9 +239,13 @@ class vimeo {
         throw new TypeError(
           'Vimeo Internal Error : Invalid Response is Fetched from Axios.get()',
         )
-      let rawVimeo = new vimeo(rawResponse, __scrapperOptions, extraContents)
+      let rawVimeo = new vimeoTrack(
+        rawResponse,
+        __scrapperOptions,
+        extraContents,
+      )
       if (__scrapperOptions?.fetchOptions?.fetchStreamReadable)
-        await rawVimeo.getStreamReadable()
+        await rawVimeo.getStream()
       return rawVimeo
     } catch (rawError) {
       if (__scrapperOptions?.ignoreError) return utils.__errorHandling(rawError)
@@ -270,4 +275,4 @@ class vimeo {
   }
 }
 
-module.exports = vimeo
+module.exports = vimeoTrack
