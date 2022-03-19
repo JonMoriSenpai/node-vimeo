@@ -1,7 +1,7 @@
 {
   "name": "node-vimeo",
   "version": "1.0.0",
-  "description": "Multi-Node-Api for Community Based Projects includes Custom-YoutubeApi and Many More Api's Wrappers",
+  "description": "Nodejs Framework for scrapping vimeo Videos with Readable Stream and its a Un-Official vimeo Package",
   "main": "./src/index.js",
   "module": "./src/index.mjs",
   "types": "./typings/index.d.ts",
@@ -62,28 +62,20 @@
   "author": "Sid is Live YT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/SidisLiveYT/Jericho-Api.git"
+    "url": "git+https://github.com/SidisLiveYT/node-vimeo.git"
   },
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/SidisLiveYT/Jericho-Api/issues"
+    "url": "https://github.com/SidisLiveYT/node-vimeo/issues"
   },
-  "homepage": "https://jericho-api.js.org",
+  "homepage": "https://node-vimeo.js.org",
   "keywords": [
     "discord",
-    "Youtube-api",
-    "youtube api",
-    "youtube url parser",
-    "discord.js",
-    "discord.eris",
-    "discord.react",
-    "multi-discord-api",
-    "jericho-hub",
-    "jericho api",
-    "jericho-api",
-    "jericho hub api",
-    "discord api",
-    "discord-api",
-    "api"
+    "node-vimeo",
+    "vimeo",
+    "vimeo-api",
+    "framework",
+    "vimeo-parser",
+    "vimeo-scrapper"
   ]
 }
