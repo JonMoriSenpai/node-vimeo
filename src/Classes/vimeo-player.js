@@ -181,12 +181,5 @@ class vimeo {
     else return utils.__customParser(this.url)
   }
 }
-new Promise(async () => {
-  console.log(
-    await vimeo.__htmlFetch('https://vimeo.com/246660563', {
-      fetchOptions: { fetchStreamReadable: true },
-    }),
-  )
-})
 
 module.exports = vimeo

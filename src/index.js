@@ -1,3 +1,3 @@
-const YoutubeApiLTE = require('./Classes/Youtube-API.js');
+const vimeoHTML = require('./Classes/vimeo-html')
 
-module.exports = { YoutubeApiLTE };
+module.exports = { vimeo: vimeoHTML }

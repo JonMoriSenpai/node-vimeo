@@ -1,4 +1,4 @@
-import APIs from './index.js'
+import handlers from './index.js'
 
-export default APIs
-export const YoutubeApiLTE = APIs.YoutubeApiLTE
+export default handlers
+export const vimeo = handlers.vimeo

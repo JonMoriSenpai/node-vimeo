@@ -1,19 +1,28 @@
 const utils = require('../Utils/__defaultUtils.js')
 const vimeo = require('./vimeo-player')
-class htmlVimeo {
-  static async extraction(rawUrl, __scrapperOptions) {
-    if (!(rawUrl && typeof rawUrl === 'string' && rawUrl !== ''))
+
+class htmlVimeo extends vimeo {
+  static async videoExtraction(rawUrl, __scrapperOptions) {
+    if (
+      !(
+        rawUrl &&
+        typeof rawUrl === 'string' &&
+        rawUrl !== '' &&
+        htmlVimeo.__test(rawUrl)
+      )
+    )
       return undefined
+
     try {
       __scrapperOptions = {
-        ...vimeo.__scrapperOptions,
+        ...htmlVimeo.__scrapperOptions,
         ...__scrapperOptions,
         htmlOptions: {
-          ...vimeo.__scrapperOptions?.htmlOptions,
+          ...htmlVimeo.__scrapperOptions?.htmlOptions,
           ...__scrapperOptions?.htmlOptions,
         },
         fetchOptions: {
-          ...vimeo.__scrapperOptions?.fetchOptions,
+          ...htmlVimeo.__scrapperOptions?.fetchOptions,
           ...__scrapperOptions?.fetchOptions,
         },
       }
@@ -80,18 +89,15 @@ class htmlVimeo {
           `}`,
       )
 
-      const vimeoInstance = await vimeo.__htmlFetch(
+      return await htmlVimeo.__htmlFetch(
         rawJsonResponse?.['url'],
         __scrapperOptions,
         rawJsonResponse,
       )
-      console.log(vimeoInstance)
-      return vimeoInstance
     } catch (rawError) {
       if (__scrapperOptions?.ignoreError) return utils.__errorHandling(rawError)
       else throw rawError
     }
   }
 }
-htmlVimeo.extraction('https://vimeo.com/baku89/fly')
 module.exports = htmlVimeo
