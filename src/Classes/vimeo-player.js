@@ -16,21 +16,14 @@ class vimeo {
   #__private = {
     __raw: undefined,
     __scrapperOptions: undefined,
-    __type: undefined,
   }
-  constructor(
-    rawResponse,
-    __scrapperOptions,
-    parseType = 'playerhtml',
-    extraFillters = {},
-  ) {
+  constructor(rawResponse, __scrapperOptions, extraContents = {}) {
     this.#__private = {
       __raw: rawResponse,
       __scrapperOptions: __scrapperOptions,
-      __type: parseType,
-      ...extraFillters,
+      ...extraContents,
     }
-    this.#__patch(rawResponse, parseType, false)
+    this.#__patch(rawResponse, false, extraContents)
   }
   static __test(rawUrl, returnRegex = false) {
     try {
@@ -45,39 +38,37 @@ class vimeo {
       return false
     }
   }
-  #__patch(rawResponse, parseType = 'playerhtml', returnOnly = false) {
+  #__patch(rawResponse, returnOnly = false, extraContents = {}) {
     if (!(rawResponse && typeof rawResponse === 'string' && rawResponse !== ''))
       return undefined
-    switch (parseType?.toLowerCase()?.trim()) {
-      case 'playerhtml':
-        let rawJsonData = JSON.parse(
-          rawResponse
-            ?.split('<script> (function(document, player) { var config = ')?.[1]
-            ?.split(';')?.[0],
-        )
-        if (!(rawJsonData?.video && rawJsonData?.request?.files?.progressive))
-          return undefined
-        let __rawStreamData = rawJsonData?.request?.files?.progressive?.find(
-          (stream) =>
-            stream?.url &&
-            typeof stream?.url === 'string' &&
-            stream?.url !== '',
-        )
-        if (!returnOnly)
-          Object.assign(this, {
-            ...rawJsonData?.video,
-            stream: __rawStreamData,
-          })
-        return {
-          ...rawJsonData?.video,
-          stream: __rawStreamData,
-        }
+
+    let rawJsonData = JSON.parse(
+      rawResponse
+        ?.split('<script> (function(document, player) { var config = ')?.[1]
+        ?.split(';')?.[0],
+    )
+    if (!(rawJsonData?.video && rawJsonData?.request?.files?.progressive))
+      return undefined
+    let __rawStreamData = rawJsonData?.request?.files?.progressive?.find(
+      (stream) =>
+        stream?.url && typeof stream?.url === 'string' && stream?.url !== '',
+    )
+    if (!returnOnly)
+      Object.assign(this, {
+        ...extraContents,
+        ...rawJsonData?.video,
+        stream: __rawStreamData,
+      })
+    return {
+      ...extraContents,
+      ...rawJsonData?.video,
+      stream: __rawStreamData,
     }
   }
   /**
    * method getStreamReadable() -> Fetch Stream Readable
    * @param {string} fetchUrl Fetch Stream Url or normal Url
-   * @returns {Promise<Readable>}
+   * @returns {Promise<Readable>} Returns Stream for HTML5 Pages or Web Apps working on Stream Based or pipeing Stuff
    */
   async getStreamReadable(fetchUrl = this.stream?.url) {
     try {
@@ -103,7 +94,7 @@ class vimeo {
           )
         )
           return undefined
-        else fetchUrl = this.#__patch(rawResponse, 'html', true)?.stream?.url
+        else fetchUrl = this.#__patch(rawResponse, true)?.stream?.url
       }
       if (!(fetchUrl && typeof fetchUrl === 'string' && fetchUrl !== ''))
         return undefined
@@ -122,14 +113,16 @@ class vimeo {
     }
   }
   /**
-   *
+   * method __htmlFetch() -> Html 5 Player Fetch for Vimeo Url
    * @param {string} rawUrl raw Vimeo Video Url for the Extraction
    * @param {object} __scrapperOptions scrapping Options for raw Fetch Method
+   * @param {object} extraContents Extra Contents to be Added  if placed from Html file Parser
    * @returns {Promise<vimeo>} Returns Instance of Vimeo with properties of Data
    */
   static async __htmlFetch(
     rawUrl,
     __scrapperOptions = vimeo.__scrapperOptions,
+    extraContents = {},
   ) {
     try {
       if (
@@ -164,7 +157,7 @@ class vimeo {
         !(rawResponse && typeof rawResponse === 'string' && rawResponse !== '')
       )
         return undefined
-      let rawVimeo = new vimeo(rawResponse, __scrapperOptions)
+      let rawVimeo = new vimeo(rawResponse, __scrapperOptions, extraContents)
       if (__scrapperOptions?.fetchOptions?.fetchStreamReadable)
         await rawVimeo.getStreamReadable()
       return rawVimeo
@@ -173,9 +166,16 @@ class vimeo {
       else throw rawError
     }
   }
+  /**
+   * @type {object} Raw Data from HTML Fetches and <response.data> Body and Compiled
+   */
   get raw() {
     return this.#__private?.__raw
   }
+
+  /**
+   * @type {string} Vimeo Video's Id Parsed from fetched Url if present
+   */
   get videoid() {
     if (!this.url) return undefined
     else return utils.__customParser(this.url)

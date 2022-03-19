@@ -39,7 +39,12 @@ class utils {
     }
   }
 
-  static #__cacheTemp(rawData, fileName = '__fbWatchPage.html') {
+  static __cacheTemp(
+    rawData,
+    fileName = 'caches-' +
+      parseInt(Math.floor(Math.random() * 100)) +
+      '-i.html',
+  ) {
     if (!fileSystem.existsSync(path.join(__dirname, '/../cache')))
       fileSystem.mkdirSync(path.join(__dirname, '/../cache'))
     const __cacheLocation = path.join(__dirname, '/../cache', '/' + fileName)
