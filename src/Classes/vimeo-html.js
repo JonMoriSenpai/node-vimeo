@@ -1,6 +1,9 @@
 const utils = require('../Utils/__defaultUtils.js')
 const vimeo = require('./vimeo-player')
 
+/**
+ * @class htmlVimeo -> Html Vimeo Handler Class for Handling Basic Un-Official Extraction and Parsing of Vimeo Video Metadata and Stream Readable
+ */
 class htmlVimeo extends vimeo {
   static async videoExtraction(rawUrl, __scrapperOptions) {
     if (
@@ -11,7 +14,9 @@ class htmlVimeo extends vimeo {
         htmlVimeo.__test(rawUrl)
       )
     )
-      return undefined
+      throw new TypeError(
+        'Vimeo Internal Error : Invalid Url is Provided for Extraction',
+      )
 
     try {
       __scrapperOptions = {

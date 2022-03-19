@@ -3,6 +3,9 @@ const https = require('https')
 const http = require('http')
 const { Readable } = require('stream')
 
+/**
+ * @class vimeo -> Vimeo Handler Class for Handling Basic Un-Official Extraction and Parsing of Vimeo Video Metadata and Stream Readable
+ */
 class vimeo {
   static __scrapperOptions = {
     htmlOptions: {},
@@ -16,12 +19,13 @@ class vimeo {
   #__private = {
     __raw: undefined,
     __scrapperOptions: undefined,
+    __rawExtra: undefined,
   }
   constructor(rawResponse, __scrapperOptions, extraContents = {}) {
     this.#__private = {
       __raw: rawResponse,
       __scrapperOptions: __scrapperOptions,
-      ...extraContents,
+      __rawExtra: extraContents,
     }
     this.#__patch(rawResponse, false, extraContents)
   }
@@ -39,30 +43,42 @@ class vimeo {
     }
   }
   #__patch(rawResponse, returnOnly = false, extraContents = {}) {
-    if (!(rawResponse && typeof rawResponse === 'string' && rawResponse !== ''))
-      return undefined
+    try {
+      if (
+        !(rawResponse && typeof rawResponse === 'string' && rawResponse !== '')
+      )
+        throw new TypeError(
+          'Vimeo Internal Error : Invalid Response is Fetched from Axios.get()',
+        )
 
-    let rawJsonData = JSON.parse(
-      rawResponse
-        ?.split('<script> (function(document, player) { var config = ')?.[1]
-        ?.split(';')?.[0],
-    )
-    if (!(rawJsonData?.video && rawJsonData?.request?.files?.progressive))
-      return undefined
-    let __rawStreamData = rawJsonData?.request?.files?.progressive?.find(
-      (stream) =>
-        stream?.url && typeof stream?.url === 'string' && stream?.url !== '',
-    )
-    if (!returnOnly)
-      Object.assign(this, {
+      let rawJsonData = JSON.parse(
+        rawResponse
+          ?.split('<script> (function(document, player) { var config = ')?.[1]
+          ?.split(';')?.[0],
+      )
+      if (!(rawJsonData?.video && rawJsonData?.request?.files?.progressive))
+        throw new TypeError(
+          'Vimeo Internal Error : Invalid Response JSON is Parsed',
+        )
+      let __rawStreamData = rawJsonData?.request?.files?.progressive?.find(
+        (stream) =>
+          stream?.url && typeof stream?.url === 'string' && stream?.url !== '',
+      )
+      if (!returnOnly)
+        Object.assign(this, {
+          ...extraContents,
+          ...rawJsonData?.video,
+          stream: __rawStreamData,
+        })
+      return {
         ...extraContents,
         ...rawJsonData?.video,
         stream: __rawStreamData,
-      })
-    return {
-      ...extraContents,
-      ...rawJsonData?.video,
-      stream: __rawStreamData,
+      }
+    } catch (rawError) {
+      if (this.#__private?.__scrapperOptions?.ignoreError)
+        return utils.__errorHandling(rawError)
+      else throw rawError
     }
   }
   /**
@@ -73,7 +89,9 @@ class vimeo {
   async getStreamReadable(fetchUrl = this.stream?.url) {
     try {
       if (!(fetchUrl && typeof fetchUrl === 'string' && fetchUrl !== ''))
-        return undefined
+        throw new TypeError(
+          'Vimeo Internal Error : Invalid Stream Url is Parsed for creating Readable Stream',
+        )
       else if (
         !(
           fetchUrl?.endsWith('mp3') ||
@@ -93,11 +111,15 @@ class vimeo {
             rawResponse !== ''
           )
         )
-          return undefined
+          throw new TypeError(
+            'Vimeo Internal Error : Invalid Response is Fetched from Axios.get()',
+          )
         else fetchUrl = this.#__patch(rawResponse, true)?.stream?.url
       }
       if (!(fetchUrl && typeof fetchUrl === 'string' && fetchUrl !== ''))
-        return undefined
+        throw new TypeError(
+          'Vimeo Internal Error : Invalid Stream Url is Parsed for creating Readable Stream',
+        )
       const rawDownloadFunction = fetchUrl?.startsWith('https') ? https : http
       return new Promise((resolve) => {
         rawDownloadFunction.get(fetchUrl, (response) => {
@@ -109,7 +131,9 @@ class vimeo {
         })
       })
     } catch (rawError) {
-      return utils.__errorHandling(rawError)
+      if (this.#__private?.__scrapperOptions?.ignoreError)
+        return utils.__errorHandling(rawError)
+      else throw rawError
     }
   }
   /**
@@ -133,7 +157,9 @@ class vimeo {
           utils.__customParser(rawUrl)
         )
       )
-        return undefined
+        throw new TypeError(
+          'Vimeo Internal Error : Invalid Vimeo Video Url is for Parsing and Extraction',
+        )
       __scrapperOptions = {
         ...vimeo.__scrapperOptions,
         ...__scrapperOptions,
@@ -156,7 +182,9 @@ class vimeo {
       if (
         !(rawResponse && typeof rawResponse === 'string' && rawResponse !== '')
       )
-        return undefined
+        throw new TypeError(
+          'Vimeo Internal Error : Invalid Response is Fetched from Axios.get()',
+        )
       let rawVimeo = new vimeo(rawResponse, __scrapperOptions, extraContents)
       if (__scrapperOptions?.fetchOptions?.fetchStreamReadable)
         await rawVimeo.getStreamReadable()
@@ -171,6 +199,13 @@ class vimeo {
    */
   get raw() {
     return this.#__private?.__raw
+  }
+
+  /**
+   * @type {object} Raw Extra Data from HTML Fetches and <response.data> Body and Compiled
+   */
+  get extraRaw() {
+    return this.#__private?.__rawExtra
   }
 
   /**
