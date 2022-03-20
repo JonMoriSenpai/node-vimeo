@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Source: vimeo-player.js</title>
+
+    <script src="scripts/prettify/prettify.js"></script>
+    <script src="scripts/prettify/lang-css.js"></script>
+    <script src="scripts/nav.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/skyceil.css">
+    <link type="text/css" rel="stylesheet" href="styles/prettify.css">
+</head>
+
+<body>
+
+<nav class="navbar">
+    <h4><a href="index.html">Home</a></h4><h5 class="no-bottom must-underline">Classes</h5><ul><li><span class="small-icon C">C</span><b><a href="htmlVimeo.html">htmlVimeo</a></b><ul class="has-class-methods"><li><span class="small-icon F">F</span><a href="htmlVimeo.html#.html">html</a></li></ul></li><li><span class="small-icon C">C</span><b><a href="vimeoTrack.html">vimeoTrack</a></b><ul class="has-class-methods"><li><span class="small-icon F">F</span><a href="vimeoTrack.html#.__htmlFetch">__htmlFetch</a></li><li><span class="small-icon F">F</span><a href="vimeoTrack.html#.__test">__test</a></li><li><span class="small-icon F">F</span><a href="vimeoTrack.html#embedHTMl">embedHTMl</a></li><li><span class="small-icon F">F</span><a href="vimeoTrack.html#getStream">getStream</a></li><li><span class="small-icon F">F</span><a href="vimeoTrack.html#parseRaw">parseRaw</a></li><li><span class="small-icon M">M</span><a href="vimeoTrack.html#__playerUrl">__playerUrl</a></li><li><span class="small-icon M">M</span><a href="vimeoTrack.html#__scrapperOptions">__scrapperOptions</a></li><li><span class="small-icon M">M</span><a href="vimeoTrack.html#__vimeoPlayerRegex">__vimeoPlayerRegex</a></li><li><span class="small-icon M">M</span><a href="vimeoTrack.html#__vimeoRegex">__vimeoRegex</a></li><li><span class="small-icon M">M</span><a href="vimeoTrack.html#extraRaw">extraRaw</a></li><li><span class="small-icon M">M</span><a href="vimeoTrack.html#raw">raw</a></li><li><span class="small-icon M">M</span><a href="vimeoTrack.html#rawJSON">rawJSON</a></li><li><span class="small-icon M">M</span><a href="vimeoTrack.html#videoId">videoId</a></li></ul></li></ul>
+</nav>
+
+<div id="main">
+    <div class="burger">
+        <div class="burger-line-1"></div>
+        <div class="burger-line-2"></div>
+        <div class="burger-line-3"></div>
+    </div>
+
+    <h1 class="page-title">Source: vimeo-player.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>const https = require('https')
+const http = require('http')
+const { Readable } = require('stream')
+const prettyMS = require('pretty-ms')
+const utils = require('../Utils/__defaultUtils.js')
+
+/**
+ * @class vimeoTrack -> Vimeo Handler Class for Handling Basic Un-Official Extraction and Parsing of Vimeo Video Metadata and Stream Readable
+ */
+class vimeoTrack {
+  /**
+   * @static
+   * @property {object} __scrapperOptions Default HTML Scrapping and Parsing Options Compilation
+   */
+
+  static __scrapperOptions = {
+    htmlOptions: {},
+    fetchOptions: { fetchStreamReadable: true },
+    ignoreError: true,
+    parseRaw: true,
+  }
+
+  /**
+   * @static
+   * @property {string | "https://player.vimeo.com/video/" } __playerUrl Player URL for Extraction of Player Metada and Stream Metadata
+   */
+
+  static __playerUrl = 'https://player.vimeo.com/video/'
+
+  /**
+   * @static
+   * @property {Regexp[]} __vimeoRegex Array of Vimeo Video URL Supported Regexes
+   */
+
+  static __vimeoRegex = [
+    /(http|https)?:\/\/(www\.|player\.)?vimeo\.com\/(?:channels\/(?:\w+\/)?|groups\/([^/]*)\/videos\/|video\/|)(\d+)(?:|\/\?)/,
+    /(https?:\/\/)?(www\.)?(player\.)?vimeo\.com\/?(showcase\/)*([0-9))([a-z]*\/)*([0-9]{6,11})[?]?.*/,
+    /(?:http:|https:|)\/\/(?:player.|www.)?vimeo\.com\/(?:video\/|embed\/|watch\?\S*v=|v\/)?(\d*)/g,
+    /((http|https)?:\/\/(?:[\w\-\_]+\.))+(player+\.)vimeo\.com/g,
+  ]
+
+  /**
+   * @static
+   * @property {Regexp[]} __vimeoPlayerRegex Array of Vimeo Player URL Supported Regexes
+   */
+
+  static __vimeoPlayerRegex = [
+    /((http|https)?:\/\/(?:[\w\-\_]+\.))+(player+\.)vimeo\.com/g,
+  ]
+
+  /**
+   * @private
+   * @property {object} __private Prirvate Caches/Data for further Parsing and Memory Cache for Vimeo Constructor
+   */
+  #__private = {
+    __raw: undefined,
+    __scrapperOptions: undefined,
+    __rawExtra: undefined,
+    __rawJSON: undefined,
+  }
+
+  /**
+   * @constructor
+   * @param {string} rawResponse Response Body like in text or HTML Player's Source Code
+   * @param {object} __scrapperOptions scrapping Options for raw Fetch Method
+   * @param {object} extraContents Extra Contents for Merging for cache in "extra Cache"
+   */
+  constructor(
+    rawResponse,
+    __scrapperOptions = vimeoTrack.__scrapperOptions,
+    extraContents = {},
+  ) {
+    this.#__private = {
+      __raw: rawResponse,
+      __scrapperOptions,
+      __rawExtra: extraContents,
+    }
+    this.#__patch(rawResponse, false, extraContents)
+  }
+
+  /**
+   * @static
+   * __test() -> Regex Testing with respect to Arrays of Regex and Raw Url Provided
+   * @param {string} rawUrl raw url for checking if its Vimeo Video URL
+   * @param {boolean | 'false'} returnRegex Boolean Value for if return the residue or results
+   * @returns {boolean | RegExpMatchArray} returns Boolean on success and Regex match Array Data if its requested
+   */
+  static __test(rawUrl, returnRegex = false) {
+    try {
+      if (!(rawUrl &amp;&amp; typeof rawUrl === 'string' &amp;&amp; rawUrl !== '')) return false
+      return returnRegex &amp;&amp;
+        Boolean(vimeoTrack.__vimeoRegex.find((regExp) => regExp.test(rawUrl)))
+        ? rawUrl?.match(
+          vimeoTrack.__vimeoRegex.find((regExp) => rawUrl.match(regExp)),
+        ) ?? false
+        : Boolean(vimeoTrack.__vimeoRegex.find((regExp) => regExp.test(rawUrl)))
+    } catch {
+      return false
+    }
+  }
+
+  /**
+   * @private
+   * #__patch() -> Patching Method for constructor Vimeo Handler
+   * @param {string} rawResponse Response Body like in text or HTML Player's Source Code
+   * @param {boolean | "false"} returnOnly Boolean value for exceptions of Parsing only method use
+   * @param {object} extraContents extra keys and values to merge/assign to the constructor on request
+   * @returns {object} Returns the parsed structured Data for if any use
+   */
+  #__patch(rawResponse, returnOnly = false, extraContents = {}) {
+    try {
+      if (
+        !(rawResponse &amp;&amp; typeof rawResponse === 'string' &amp;&amp; rawResponse !== '')
+      )
+        throw new TypeError(
+          'Vimeo Internal Error : Invalid Response is Fetched from Axios.get()',
+        )
+
+      const rawJsonData = JSON.parse(
+        rawResponse
+          ?.split('&lt;script> (function(document, player) { var config = ')?.[1]
+          ?.split(';')?.[0],
+      )
+      if (!(rawJsonData?.video &amp;&amp; rawJsonData?.request?.files?.progressive))
+        throw new TypeError(
+          'Vimeo Internal Error : Invalid Response JSON is Parsed',
+        )
+      const __rawStreamData = rawJsonData?.request?.files?.progressive?.find(
+        (stream) => stream?.url &amp;&amp; typeof stream?.url === 'string' &amp;&amp; stream?.url !== '',
+      )
+      this.#__private.__rawJSON = {
+        ...this.__private?.__rawJSON,
+        ...rawJsonData?.video,
+        ...extraContents,
+        stream: __rawStreamData,
+      }
+      const __cookedStructure = this.#__private?.__scrapperOptions?.parseRaw
+        ? this.parseRaw()
+        : this.#__private.__rawJSON
+      if (!returnOnly) Object.assign(this, __cookedStructure)
+      return __cookedStructure
+    } catch (rawError) {
+      if (this.#__private?.__scrapperOptions?.ignoreError)
+        return utils.__errorHandling(rawError)
+      else throw rawError
+    }
+  }
+
+  /**
+   * parseRaw() -> Parse Raw Object/Properties of teh Class or requested Object Variable
+   * @param {object} rawObjects Raw Objects Value to be parsed into meaningfull and cleaned
+   * @returns {object} Return cleaned Object Variable
+   */
+  parseRaw(rawObjects = this.#__private?.__rawJSON) {
+    try {
+      if (!(rawObjects &amp;&amp; typeof rawObjects === 'object' &amp;&amp; rawObjects !== {}))
+        return undefined
+      const __rawEntries = Object.entries(rawObjects)
+      const cookedStructure = {}
+      cookedStructure.title = __rawEntries?.find(
+        (raw) => raw?.[0] &amp;&amp; raw?.[0]?.trim() === 'title' &amp;&amp; raw?.[1],
+      )?.[1]
+      cookedStructure.url = __rawEntries?.find(
+        (raw) => raw?.[0] &amp;&amp; raw?.[0]?.trim() === 'url' &amp;&amp; raw?.[1],
+      )?.[1]
+      cookedStructure.description = __rawEntries?.find(
+        (raw) => raw?.[0] &amp;&amp; raw?.[0]?.trim() === 'description' &amp;&amp; raw?.[1],
+      )?.[1]
+      cookedStructure.duration = {
+        ms:
+          parseInt(
+            __rawEntries?.find(
+              (raw) => raw?.[0] &amp;&amp; raw?.[0]?.trim() === 'duration' &amp;&amp; raw?.[1],
+            )?.[1] ?? 0,
+          ) * 1000,
+        readable: prettyMS(
+          parseInt(
+            __rawEntries?.find(
+              (raw) => raw?.[0] &amp;&amp; raw?.[0]?.trim() === 'duration' &amp;&amp; raw?.[1],
+            )?.[1] ?? 0,
+          ) * 1000,
+        ),
+      }
+      cookedStructure.thumbnails = __rawEntries?.find(
+        (raw) => raw?.[0] &amp;&amp; raw?.[0]?.trim() === 'thumbs' &amp;&amp; raw?.[1],
+      )?.[1]
+      cookedStructure.author = {
+        type: __rawEntries?.find(
+          (raw) => raw?.[0] &amp;&amp; raw?.[0]?.trim() === 'owner' &amp;&amp; raw?.[1],
+        )?.[1]?.account_type,
+        name: __rawEntries?.find(
+          (raw) => raw?.[0] &amp;&amp; raw?.[0]?.trim() === 'owner' &amp;&amp; raw?.[1],
+        )?.[1]?.name,
+        url: __rawEntries?.find(
+          (raw) => raw?.[0] &amp;&amp; raw?.[0]?.trim() === 'owner' &amp;&amp; raw?.[1],
+        )?.[1]?.url,
+        images: {
+          normal: __rawEntries?.find(
+            (raw) => raw?.[0] &amp;&amp; raw?.[0]?.trim() === 'owner' &amp;&amp; raw?.[1],
+          )?.[1]?.img,
+          normal2X: __rawEntries?.find(
+            (raw) => raw?.[0] &amp;&amp; raw?.[0]?.trim() === 'owner' &amp;&amp; raw?.[1],
+          )?.[1]?.img_2x,
+        },
+        authorId:
+          __rawEntries?.find(
+            (raw) => raw?.[0] &amp;&amp; raw?.[0]?.trim() === 'creator_id' &amp;&amp; raw?.[1],
+          )?.[1] ??
+          __rawEntries?.find(
+            (raw) => raw?.[0] &amp;&amp; raw?.[0]?.trim() === 'owner' &amp;&amp; raw?.[1],
+          )?.[1]?.id,
+      }
+      cookedStructure.trackId = __rawEntries?.find(
+        (raw) => raw?.[0] &amp;&amp; raw?.[0]?.trim() === 'id' &amp;&amp; raw?.[1],
+      )?.[1]
+      cookedStructure.privacy = __rawEntries?.find(
+        (raw) => raw?.[0] &amp;&amp; raw?.[0]?.trim() === 'privacy' &amp;&amp; raw?.[1],
+      )?.[1]
+      cookedStructure.language = __rawEntries?.find(
+        (raw) => raw?.[0] &amp;&amp; raw?.[0]?.trim() === 'lang' &amp;&amp; raw?.[1],
+      )?.[1]
+      cookedStructure.shareURL = __rawEntries?.find(
+        (raw) => raw?.[0] &amp;&amp; raw?.[0]?.trim() === 'share_url' &amp;&amp; raw?.[1],
+      )?.[1]
+      cookedStructure.isLive = !!__rawEntries?.find(
+        (raw) => raw?.[0] &amp;&amp; raw?.[0]?.trim() === 'live_event' &amp;&amp; raw?.[1],
+      )?.[1]
+      cookedStructure.streamMetadata = {
+        type: __rawEntries?.find(
+          (raw) => raw?.[0] &amp;&amp; raw?.[0]?.trim() === 'stream' &amp;&amp; raw?.[1],
+        )?.[1]?.mime,
+        width: __rawEntries?.find(
+          (raw) => raw?.[0] &amp;&amp; raw?.[0]?.trim() === 'stream' &amp;&amp; raw?.[1],
+        )?.[1]?.width,
+        height: __rawEntries?.find(
+          (raw) => raw?.[0] &amp;&amp; raw?.[0]?.trim() === 'stream' &amp;&amp; raw?.[1],
+        )?.[1]?.height,
+        fps: __rawEntries?.find(
+          (raw) => raw?.[0] &amp;&amp; raw?.[0]?.trim() === 'stream' &amp;&amp; raw?.[1],
+        )?.[1]?.fps,
+        quality: __rawEntries?.find(
+          (raw) => raw?.[0] &amp;&amp; raw?.[0]?.trim() === 'stream' &amp;&amp; raw?.[1],
+        )?.[1]?.quality,
+        streamUrl: __rawEntries?.find(
+          (raw) => raw?.[0] &amp;&amp; raw?.[0]?.trim() === 'stream' &amp;&amp; raw?.[1],
+        )?.[1]?.url,
+        buffer: __rawEntries?.find(
+          (raw) => raw?.[0] &amp;&amp; raw?.[0]?.trim() === 'stream' &amp;&amp; raw?.[1],
+        )?.[1]?.buffer,
+      }
+      cookedStructure.htmlPlayer = {
+        url: __rawEntries?.find(
+          (raw) => raw?.[0] &amp;&amp; raw?.[0]?.trim() === 'player' &amp;&amp; raw?.[1],
+        )?.[1],
+        width: __rawEntries?.find(
+          (raw) => raw?.[0] &amp;&amp; raw?.[0]?.trim() === 'player_width' &amp;&amp; raw?.[1],
+        )?.[1],
+        height: __rawEntries?.find(
+          (raw) => raw?.[0] &amp;&amp; raw?.[0]?.trim() === 'player_height' &amp;&amp; raw?.[1],
+        )?.[1],
+      }
+      cookedStructure.mobile = {
+        ios: {
+          appName: __rawEntries?.find(
+            (raw) => raw?.[0] &amp;&amp; raw?.[0]?.trim() === 'ios_app_name' &amp;&amp; raw?.[1],
+          )?.[1],
+          appStoreId: __rawEntries?.find(
+            (raw) => raw?.[0] &amp;&amp; raw?.[0]?.trim() === 'ios_app_store_id' &amp;&amp; raw?.[1],
+          )?.[1],
+          url: __rawEntries?.find(
+            (raw) => raw?.[0] &amp;&amp; raw?.[0]?.trim() === 'ios_url' &amp;&amp; raw?.[1],
+          )?.[1],
+        },
+        android: {
+          appName: __rawEntries?.find(
+            (raw) => raw?.[0] &amp;&amp; raw?.[0]?.trim() === 'android_app_name' &amp;&amp; raw?.[1],
+          )?.[1],
+          package: __rawEntries?.find(
+            (raw) => raw?.[0] &amp;&amp; raw?.[0]?.trim() === 'android_package' &amp;&amp; raw?.[1],
+          )?.[1],
+          url: __rawEntries?.find(
+            (raw) => raw?.[0] &amp;&amp; raw?.[0]?.trim() === 'android_url' &amp;&amp; raw?.[1],
+          )?.[1],
+        },
+        extraApp: {
+          iphone: {
+            name: __rawEntries?.find(
+              (raw) => raw?.[0] &amp;&amp; raw?.[0]?.trim() === 'app_name_iphone' &amp;&amp; raw?.[1],
+            )?.[1],
+            id: __rawEntries?.find(
+              (raw) => raw?.[0] &amp;&amp; raw?.[0]?.trim() === 'app_id_iphone' &amp;&amp; raw?.[1],
+            )?.[1],
+            url: __rawEntries?.find(
+              (raw) => raw?.[0] &amp;&amp; raw?.[0]?.trim() === 'app_url_iphone' &amp;&amp; raw?.[1],
+            )?.[1],
+          },
+          ipad: {
+            name: __rawEntries?.find(
+              (raw) => raw?.[0] &amp;&amp; raw?.[0]?.trim() === 'app_name_ipad' &amp;&amp; raw?.[1],
+            )?.[1],
+            id: __rawEntries?.find(
+              (raw) => raw?.[0] &amp;&amp; raw?.[0]?.trim() === 'app_id_ipad' &amp;&amp; raw?.[1],
+            )?.[1],
+            url: __rawEntries?.find(
+              (raw) => raw?.[0] &amp;&amp; raw?.[0]?.trim() === 'app_url_ipad' &amp;&amp; raw?.[1],
+            )?.[1],
+          },
+          googlePlay: {
+            name: __rawEntries?.find(
+              (raw) => raw?.[0] &amp;&amp;
+                raw?.[0]?.trim() === 'app_name_googleplay' &amp;&amp;
+                raw?.[1],
+            )?.[1],
+            id: __rawEntries?.find(
+              (raw) => raw?.[0] &amp;&amp;
+                raw?.[0]?.trim() === 'app_id_googleplay' &amp;&amp;
+                raw?.[1],
+            )?.[1],
+            url: __rawEntries?.find(
+              (raw) => raw?.[0] &amp;&amp;
+                raw?.[0]?.trim() === 'app_url_googleplay' &amp;&amp;
+                raw?.[1],
+            )?.[1],
+          },
+        },
+      }
+      cookedStructure.metadata = {
+        video: {
+          url: __rawEntries?.find(
+            (raw) => raw?.[0] &amp;&amp; raw?.[0]?.trim() === 'video_url' &amp;&amp; raw?.[1],
+          )?.[1],
+          secureUrl: __rawEntries?.find(
+            (raw) => raw?.[0] &amp;&amp; raw?.[0]?.trim() === 'video_secure_url' &amp;&amp; raw?.[1],
+          )?.[1],
+          type: __rawEntries?.find(
+            (raw) => raw?.[0] &amp;&amp; raw?.[0]?.trim() === 'video_type' &amp;&amp; raw?.[1],
+          )?.[1],
+          width: __rawEntries?.find(
+            (raw) => raw?.[0] &amp;&amp; raw?.[0]?.trim() === 'video_width' &amp;&amp; raw?.[1],
+          )?.[1],
+          height: __rawEntries?.find(
+            (raw) => raw?.[0] &amp;&amp; raw?.[0]?.trim() === 'video_height' &amp;&amp; raw?.[1],
+          )?.[1],
+        },
+        overlayImage: {
+          url: __rawEntries?.find(
+            (raw) => raw?.[0] &amp;&amp; raw?.[0]?.trim() === 'image' &amp;&amp; raw?.[1],
+          )?.[1],
+          secureUrl: __rawEntries?.find(
+            (raw) => raw?.[0] &amp;&amp; raw?.[0]?.trim() === 'image_secure_url' &amp;&amp; raw?.[1],
+          )?.[1],
+          type: __rawEntries?.find(
+            (raw) => raw?.[0] &amp;&amp; raw?.[0]?.trim() === 'image_type' &amp;&amp; raw?.[1],
+          )?.[1],
+          width: __rawEntries?.find(
+            (raw) => raw?.[0] &amp;&amp; raw?.[0]?.trim() === 'image_width' &amp;&amp; raw?.[1],
+          )?.[1],
+          height: __rawEntries?.find(
+            (raw) => raw?.[0] &amp;&amp; raw?.[0]?.trim() === 'image_height' &amp;&amp; raw?.[1],
+          )?.[1],
+        },
+        updatedTime: __rawEntries?.find(
+          (raw) => raw?.[0] &amp;&amp; raw?.[0]?.trim() === 'updated_time' &amp;&amp; raw?.[1],
+        )?.[1],
+        otherTags: __rawEntries
+          ?.filter(
+            (raw) => raw?.[0] &amp;&amp; raw?.[0]?.trim() === 'video_other_tag' &amp;&amp; raw?.[1],
+          )
+          ?.map((raw) => raw?.[1]),
+      }
+      return cookedStructure
+    } catch (rawError) {
+      if (this.#__private?.__scrapperOptions?.ignoreError)
+        return utils.__errorHandling(rawError)
+      else throw rawError
+    }
+  }
+
+  /**
+   * method getStream() -> Fetch Stream Readable
+   * @param {string} fetchUrl Fetch Stream Url or normal Vimeo Video Url
+   * @returns {Promise&lt;Readable>} Returns Stream for HTML5 Pages or Web Apps working on Stream Based or pipeing Stuff
+   */
+  async getStream(
+    fetchUrl = this.streamMetadata?.url ?? this.url ?? this?.video_url,
+  ) {
+    try {
+      if (!(fetchUrl &amp;&amp; typeof fetchUrl === 'string' &amp;&amp; fetchUrl !== ''))
+        throw new TypeError(
+          'Vimeo Internal Error : Invalid Stream Url is Parsed for creating Readable Stream',
+        )
+      else if (
+        !(
+          fetchUrl?.endsWith('mp3') ||
+          fetchUrl?.endsWith('mp4') ||
+          fetchUrl?.startsWith('http')
+        )
+      ) {
+        if (!utils.__vimeoVideoIdParser(fetchUrl)) return undefined
+        const rawResponse = await utils.__rawfetchBody(
+          vimeoTrack.__playerUrl +
+            (utils.__vimeoVideoIdParser(fetchUrl) ??
+              this.videoId ??
+              this.trackId),
+          this.#__private?.__scrapperOptions?.htmlOptions,
+        )
+        if (
+          !(
+            rawResponse &amp;&amp;
+            typeof rawResponse === 'string' &amp;&amp;
+            rawResponse !== ''
+          )
+        )
+          throw new TypeError(
+            'Vimeo Internal Error : Invalid Response is Fetched from Axios.get()',
+          )
+        else fetchUrl = this.#__patch(rawResponse, true)?.stream?.url
+      }
+      if (!(fetchUrl &amp;&amp; typeof fetchUrl === 'string' &amp;&amp; fetchUrl !== ''))
+        throw new TypeError(
+          'Vimeo Internal Error : Invalid Stream Url is Parsed for creating Readable Stream',
+        )
+      const rawDownloadFunction = fetchUrl?.startsWith('https') ? https : http
+      return new Promise((resolve) => {
+        rawDownloadFunction.get(fetchUrl, (response) => {
+          Object.assign(this.streamMetadata, {
+            ...this.streamMetadata,
+            buffer: response,
+          })
+          resolve(response)
+        })
+      })
+    } catch (rawError) {
+      if (this.#__private?.__scrapperOptions?.ignoreError)
+        return utils.__errorHandling(rawError)
+      else throw rawError
+    }
+  }
+
+  /**
+   * @static
+   * __htmlFetch() -> Html 5 Player Fetch for Vimeo Url
+   * @param {string} rawUrl raw Vimeo Video Url for the Extraction
+   * @param {object} __scrapperOptions scrapping Options for raw Fetch Method
+   * @param {object} extraContents Extra Contents to be Added  if placed from Html file Parser
+   * @returns {Promise&lt;vimeoTrack>} Returns Instance of Vimeo with properties of Data
+   */
+  static async __htmlFetch(
+    rawUrl,
+    __scrapperOptions = vimeoTrack.__scrapperOptions,
+    extraContents = {},
+  ) {
+    try {
+      if (
+        !(
+          rawUrl &amp;&amp;
+          typeof rawUrl === 'string' &amp;&amp;
+          rawUrl !== '' &amp;&amp;
+          utils.__vimeoVideoIdParser(rawUrl)
+        )
+      )
+        throw new TypeError(
+          'Vimeo Internal Error : Invalid Vimeo Video Url is for Parsing and Extraction',
+        )
+      __scrapperOptions = {
+        ...vimeoTrack.__scrapperOptions,
+        ...__scrapperOptions,
+        htmlOptions: {
+          ...vimeoTrack.__scrapperOptions?.htmlOptions,
+          ...__scrapperOptions?.htmlOptions,
+        },
+        fetchOptions: {
+          ...vimeoTrack.__scrapperOptions?.fetchOptions,
+          ...__scrapperOptions?.fetchOptions,
+        },
+      }
+      rawUrl = vimeoTrack.__vimeoPlayerRegex?.find(
+        (regex) => regex &amp;&amp; regex.test(rawUrl),
+      )
+        ? rawUrl
+        : vimeoTrack.__playerUrl + utils.__vimeoVideoIdParser(rawUrl)
+      const rawResponse = await utils.__rawfetchBody(
+        rawUrl,
+        __scrapperOptions?.htmlOptions,
+      )
+      if (
+        !(rawResponse &amp;&amp; typeof rawResponse === 'string' &amp;&amp; rawResponse !== '')
+      )
+        throw new TypeError(
+          'Vimeo Internal Error : Invalid Response is Fetched from Axios.get()',
+        )
+      const rawVimeo = new vimeoTrack(
+        rawResponse,
+        __scrapperOptions,
+        extraContents,
+      )
+      if (__scrapperOptions?.fetchOptions?.fetchStreamReadable)
+        await rawVimeo.getStream()
+      return rawVimeo
+    } catch (rawError) {
+      if (__scrapperOptions?.ignoreError) return utils.__errorHandling(rawError)
+      else throw rawError
+    }
+  }
+
+  /**
+   * embedHTMl() -> Embed Frame Method to make a single html code snippet to paste for Embeded HTML Player
+   * @param {number | string | 640} width width length of the Player in  Embeded HTML Player Frame
+   * @param {number | string | 360} height height length of the Player in Embeded HTML Player Frame
+   * @param {number | string | 0} frameBorder frameBorder data of the Player in Embeded HTML Player Frame
+   * @returns {string | void} Returns &lt;frame> Embed Player for HTML pages
+   */
+  embedHTMl(width = 640, height = 360, frameBorder = 0) {
+    if (
+      !this.htmlPlayer?.url &amp;&amp;
+      !this.#__private?.__rawJSON?.embed_code &amp;&amp;
+      !this.#__private?.__rawExtra?.player
+    )
+      return undefined
+    else
+      return (
+        this.#__private?.__rawJSON?.embed_code ??
+        `&lt;iframe title="vimeo-player" src="${
+          this.htmlPlayer?.url ?? this.#__private?.__rawExtra?.player
+        }" width="${width}" height="${height}" frameborder="${
+          frameBorder ?? 0
+        }" allowfullscreen>&lt;/iframe>`
+      )
+  }
+
+  /**
+   * @type {object} Raw Data from HTML Fetches and &lt;response.data> Body and Compiled
+   */
+  get raw() {
+    return this.#__private?.__raw
+  }
+
+  /**
+   * @type {object} Raw JSON Data from HTML Fetches and &lt;response.data> Body and Compiled
+   */
+  get rawJSON() {
+    return this.#__private?.__rawJSON
+  }
+
+  /**
+   * @type {object} Raw Extra Data from HTML Fetches and &lt;response.data> Body and Compiled
+   */
+  get extraRaw() {
+    return this.#__private?.__rawExtra
+  }
+
+  /**
+   * @type {string} Vimeo Video's Id Parsed from fetched Url if present
+   */
+  get videoId() {
+    if (!this.url) return undefined
+    else return utils.__vimeoVideoIdParser(this.url, vimeoTrack.__vimeoRegex)
+  }
+}
+
+module.exports = vimeoTrack
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+
+</div>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.7</a> on Sun Mar 20 2022 10:47:27 GMT+0000 (Coordinated Universal Time) using <a href="https://github.com/zyrouge/jsdoc-skyceil">Skyceil Theme</a>
+</footer>
+
+<script>prettyPrint();</script>
+<script src="scripts/linenumber.js"></script>
+
+</body>
+</html>

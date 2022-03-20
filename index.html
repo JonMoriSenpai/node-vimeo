@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Home</title>
+
+    <script src="scripts/prettify/prettify.js"></script>
+    <script src="scripts/prettify/lang-css.js"></script>
+    <script src="scripts/nav.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/skyceil.css">
+    <link type="text/css" rel="stylesheet" href="styles/prettify.css">
+</head>
+
+<body>
+
+<nav class="navbar">
+    <h4><a href="index.html">Home</a></h4><h5 class="no-bottom must-underline">Classes</h5><ul><li><span class="small-icon C">C</span><b><a href="htmlVimeo.html">htmlVimeo</a></b><ul class="has-class-methods"><li><span class="small-icon F">F</span><a href="htmlVimeo.html#.html">html</a></li></ul></li><li><span class="small-icon C">C</span><b><a href="vimeoTrack.html">vimeoTrack</a></b><ul class="has-class-methods"><li><span class="small-icon F">F</span><a href="vimeoTrack.html#.__htmlFetch">__htmlFetch</a></li><li><span class="small-icon F">F</span><a href="vimeoTrack.html#.__test">__test</a></li><li><span class="small-icon F">F</span><a href="vimeoTrack.html#embedHTMl">embedHTMl</a></li><li><span class="small-icon F">F</span><a href="vimeoTrack.html#getStream">getStream</a></li><li><span class="small-icon F">F</span><a href="vimeoTrack.html#parseRaw">parseRaw</a></li><li><span class="small-icon M">M</span><a href="vimeoTrack.html#__playerUrl">__playerUrl</a></li><li><span class="small-icon M">M</span><a href="vimeoTrack.html#__scrapperOptions">__scrapperOptions</a></li><li><span class="small-icon M">M</span><a href="vimeoTrack.html#__vimeoPlayerRegex">__vimeoPlayerRegex</a></li><li><span class="small-icon M">M</span><a href="vimeoTrack.html#__vimeoRegex">__vimeoRegex</a></li><li><span class="small-icon M">M</span><a href="vimeoTrack.html#extraRaw">extraRaw</a></li><li><span class="small-icon M">M</span><a href="vimeoTrack.html#raw">raw</a></li><li><span class="small-icon M">M</span><a href="vimeoTrack.html#rawJSON">rawJSON</a></li><li><span class="small-icon M">M</span><a href="vimeoTrack.html#videoId">videoId</a></li></ul></li></ul>
+</nav>
+
+<div id="main">
+    <div class="burger">
+        <div class="burger-line-1"></div>
+        <div class="burger-line-2"></div>
+        <div class="burger-line-3"></div>
+    </div>
+
+    <h1 class="page-title">Home</h1>
+
+    
+
+
+
+    
+
+
+    <h3>node-vimeo 1.0.0</h3>
+
+
+
+
+
+
+
+
+
+
+    
+
+
+
+
+    <section>
+        <article><div align="center">
+  <br />
+  <p>
+    <a href="https://github.com/SidisLiveYT/node-vimeo"><img src="https://raw.githubusercontent.com/SidisLiveYT/node-vimeo/master/.github/asserts/logo.svg" width="546" alt="node-vimeo" /></a>
+  </p>
+  <br />
+<p>
+<a href="https://discord.gg/MfME24sJ2a"><img src="https://img.shields.io/discord/795434308005134406?color=5865F2&logo=discord&logoColor=white" alt="Discord server" /></a>
+<a href="https://www.npmjs.com/package/node-vimeo"><img src="https://img.shields.io/npm/v/node-vimeo.svg?maxAge=3600" alt="npm version" /></a>
+<a href="https://www.npmjs.com/package/node-vimeo"><img src="https://img.shields.io/npm/dt/node-vimeo.svg?maxAge=3600" alt="npm downloads" /></a>
+<a href="https://github.com/SidisLiveYT/node-vimeo/actions"><img src="https://github.com/discordjs/discord.js/workflows/Testing/badge.svg" alt="Tests status" /></a>
+</p>
+</div>
+<h1>About :</h1>
+<p><em>node-vimeo is an Un-Official Nodejs-Vimeo Wrapper for Parsing/Scrapping HTML Page of Vimeo Videos/Channels/Groups and many more related to Vimeo , The Wrapper helps for making a smooth API Call endpoints too for fetching Data from Official Vimeo API using client ID and client Secret</em></p>
+<h2>Installation</h2>
+<h3>Install <strong><a href="https://npmjs.com/package/node-vimeo">node-vimeo</a></strong></h3>
+<pre class="prettyprint source lang-sh"><code>$ npm install --save node-vimeo
+</code></pre>
+<h1>Features</h1>
+<ul>
+<li>Soft and Hard fetch methods Integrated with vimeoTracks Class</li>
+<li>Package can be used with Commonjs or ES6 Type of Javascript and typings included</li>
+<li>HTML Scrapper/Parser and even Support fetching of Stream Readable for HTML 5 Players/Piping</li>
+<li>Custom Vimeo Wrapper and have many functions to fetch data</li>
+<li>Better Error Handlers and Request Handlers</li>
+<li>Api EndPoints Support (soon)</li>
+<li>User/Group Fetch Data Support (soon)</li>
+</ul>
+<h3><a href="https://node-vimeo.js.org/">Documentation</a></h3>
+<h3>Schemes :</h3>
+<h4>Parsed Vimeo Track:</h4>
+<pre class="prettyprint source lang-js"><code>vimeoTrack {
+  title: 'Inledning - grupputbildning',
+  url: 'https://vimeo.com/407943692',
+  description: 'Inledning. Visas i gruputbildning i M&ouml;ts &amp; L&auml;r. Grupputbildning_Inledning_1920x1080_200414_1',
+  duration: { ms: 143000, readable: '2m 23s' },
+  thumbnails: {
+    '640': 'https://i.vimeocdn.com/video/878726798-c9b0aef95da3925a23007ec8ff865fef23d6d6fe45fab8054af4d80b1b5404ca-d_640',
+    '960': 'https://i.vimeocdn.com/video/878726798-c9b0aef95da3925a23007ec8ff865fef23d6d6fe45fab8054af4d80b1b5404ca-d_960',
+    '1280': 'https://i.vimeocdn.com/video/878726798-c9b0aef95da3925a23007ec8ff865fef23d6d6fe45fab8054af4d80b1b5404ca-d_1280',
+    base: 'https://i.vimeocdn.com/video/878726798-c9b0aef95da3925a23007ec8ff865fef23d6d6fe45fab8054af4d80b1b5404ca-d'
+  },
+  author: {
+    type: 'live_premium',
+    name: 'STR',
+    url: 'https://vimeo.com/user32313364',
+    images: {
+      normal: 'https://i.vimeocdn.com/portrait/9653276_60x60.jpg',
+      normal2X: 'https://i.vimeocdn.com/portrait/9653276_120x120.jpg'
+    },
+    authorId: 32313364
+  },
+  trackId: 407943692,
+  privacy: 'anybody',
+  language: undefined,
+  shareURL: 'https://vimeo.com/407943692',
+  isLive: false,
+  streamMetadata: {
+    type: 'video/mp4',
+    width: 1280,
+    height: 720,
+    fps: 25,
+    quality: '720p',
+    streamUrl: 'https://vod-progressive.akamaized.net/exp=1647765700~acl=%2Fvimeo-prod-skyfire-std-us%2F01%2F1588%2F16%2F407943692%2F1747941996.mp4~hmac=ce8dce3557fcb29616793286f0912592a6b542137cbfaf844d1e27cb49174e51/vimeo-prod-skyfire-std-us/01/1588/16/407943692/1747941996.mp4',
+    buffer: StreamReadable
+  },
+  htmlPlayer: {
+    url: 'https://player.vimeo.com/video/407943692?h=04cd636c18',
+    width: '1280',
+    height: '720'
+  }
+}
+</code></pre>
+<h4>Raw Vimeo Track Scheme :</h4>
+<pre class="prettyprint source lang-js"><code>vimeoTrack {
+  fb_app_id: '19884028963',
+  viewport: 'width=device-width,initial-scale=1.0,maximum-scale=5.0,user-scalable=yes',
+  site_name: 'Vimeo',
+  url: 'https://vimeo.com/246660563',
+  type: 'video.other',
+  title: 'Fly - imai ft. 79, Kaho Nakamura',
+  description: 'Stop-motioned various kinds of mochi at my grandparents&#039; place.  Direction/animation: Baku Hashimoto Logo design: 79  Track by imai (group_inou) featuring&hellip;',
+  updated_time: '2022-03-19T13:55:55-04:00',
+  image: 'https://i.vimeocdn.com/filter/overlay?src0=https%3A%2F%2Fi.vimeocdn.com%2Fvideo%2F696079667-94a0641db16295fc9c32803c15331b4dea14ded3dcdcad3101a8b278c6c04bf1-d_1280x720&amp;src1=https%3A%2F%2Ff.vimeocdn.com%2Fimages_v6%2Fshare%2Fplay_icon_overlay.png',
+  image_secure_url: 'https://i.vimeocdn.com/filter/overlay?src0=https%3A%2F%2Fi.vimeocdn.com%2Fvideo%2F696079667-94a0641db16295fc9c32803c15331b4dea14ded3dcdcad3101a8b278c6c04bf1-d_1280x720&src1=https%3A%2F%2Ff.vimeocdn.com%2Fimages_v6%2Fshare%2Fplay_icon_overlay.png',
+  image_type: 'image/jpg',
+  image_width: '1280',
+  image_height: '720',
+  video_url: 'https://player.vimeo.com/video/246660563?autoplay=1&amp;h=2e6d23f925',
+  video_secure_url: 'https://player.vimeo.com/video/246660563?autoplay=1&amp;h=2e6d23f925',
+  video_type: 'text/html',
+  video_width: '1280',
+  video_height: '720',
+  ios_app_name: 'Vimeo',
+  ios_app_store_id: '425194759',
+  ios_url: 'vimeo://app.vimeo.com/videos/246660563',
+  android_app_name: 'Vimeo',
+  android_package: 'com.vimeo.android.videoapp',
+  android_url: 'vimeo://app.vimeo.com/videos/246660563',
+  web_should_fallback: 'true',
+  video_director: 'https://vimeo.com/baku89',
+  video_other_tag: 'motion graphics',
+  card: 'player',
+  site: '@vimeo',
+  player: 'https://player.vimeo.com/video/246660563?h=2e6d23f925',
+  player_width: '1280',
+  player_height: '720',
+  app_name_iphone: 'Vimeo',
+  app_id_iphone: '425194759',
+  app_url_iphone: 'vimeo://app.vimeo.com/videos/246660563',
+  app_name_ipad: 'Vimeo',
+  app_id_ipad: '425194759',
+  app_url_ipad: 'vimeo://app.vimeo.com/videos/246660563',
+  app_name_googleplay: 'Vimeo',
+  app_id_googleplay: 'com.vimeo.android.videoapp',
+  app_url_googleplay: 'vimeo://app.vimeo.com/videos/246660563',
+  creator: '_baku89',
+  creator_id: '339501114',
+  msapplication_TileImage: 'https://i.vimeocdn.com/favicon/main-touch_144',
+  msapplication_TileColor: '#00adef',
+  rating: { id: 6 },
+  version: { current: null, available: null },
+  height: 1080,
+  duration: 194,
+  thumbs: {
+    '640': 'https://i.vimeocdn.com/video/696079667-94a0641db16295fc9c32803c15331b4dea14ded3dcdcad3101a8b278c6c04bf1-d_640',
+    '960': 'https://i.vimeocdn.com/video/696079667-94a0641db16295fc9c32803c15331b4dea14ded3dcdcad3101a8b278c6c04bf1-d_960',
+    '1280': 'https://i.vimeocdn.com/video/696079667-94a0641db16295fc9c32803c15331b4dea14ded3dcdcad3101a8b278c6c04bf1-d_1280',
+    base: 'https://i.vimeocdn.com/video/696079667-94a0641db16295fc9c32803c15331b4dea14ded3dcdcad3101a8b278c6c04bf1-d'
+  },
+  owner: {
+    account_type: 'plus',
+    name: 'Baku 麦',
+    img: 'https://i.vimeocdn.com/portrait/19948870_60x60.jpg',
+    url: 'https://vimeo.com/baku89',
+    img_2x: 'https://i.vimeocdn.com/portrait/19948870_120x120.jpg',
+    id: 4818669
+  },
+  id: 246660563,
+  embed_code: '&lt;iframe title=&quot;vimeo-player&quot; src=&quot;https://player.vimeo.com/video/246660563?h=2e6d23f925&quot; width=&quot;640&quot; height=&quot;360&quot; frameborder=&quot;0&quot; allowfullscreen>&lt;/iframe>',
+  share_url: 'https://vimeo.com/246660563',
+  width: 1920,
+  embed_permission: 'public',
+  fps: 15,
+  spatial: 0,
+  live_event: null,
+  allow_hd: 1,
+  hd: 1,
+  lang: 'en',
+  default_to_hd: 1,
+  privacy: 'anybody',
+  bypass_token: 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJjbGlwX2lkIjoyNDY2NjA1NjMsImV4cCI6MTY0NzcxNjQ2MH0.gBg4bSdNe-DuA_jGxaNGbOiPu0XNv81oOUFyOiUDuzM',
+  unlisted_hash: null,
+  streamMetadata: {
+    profile: '175',
+    width: 1920,
+    mime: 'video/mp4',
+    fps: 15,
+    url: 'https://vod-progressive.akamaized.net/exp=1647716746~acl=%2Fvimeo-prod-skyfire-std-us%2F01%2F4332%2F9%2F246660563%2F891121771.mp4~hmac=0a5d83d7d2ece81035c41cb49db1f194794dec04b3d2227373a6aeb4d52ee33b/vimeo-prod-skyfire-std-us/01/4332/9/246660563/891121771.mp4',
+    cdn: 'akamai_interconnect',
+    quality: '1080p',
+    id: '0173d7d2-ea4e-4c9c-8c73-3b0ddfe1112f',
+    origin: 'gcs',
+    height: 1080,
+    buffer: StreamReadable
+  }
+}
+</code></pre>
+<h3>Example :</h3>
+<pre class="prettyprint source lang-js"><code>const { vimeo } = require(&quot;node-vimeo&quot;);
+
+new Promise(async () => {
+  let rawVimeoTrack = await vimeo.html(&quot;https://vimeo.com/246660563&quot;, {
+    fetchOptions: { fetchStreamReadable: true },
+  });
+  resolve(rawVimeoTrack);
+});
+</code></pre>
+<h3>Credits :</h3>
+<ul>
+<li><strong>We are thanking <a href="https://vimeo.com">@vimeo</a> for Providing a great Platform for Songs Creators and Song Lovers</strong></li>
+<li><strong>We are not Working Under or Collaborating with <a href="https://vimeo.com">Official Vimeo</a> for the <code>node-vimeo</code> Wrapper</strong></li>
+</ul>
+<h2>Links</h2>
+<ul>
+<li><a href="https://vimeo.com">Vimeo Website</a></li>
+<li><a href="https://developer.vimeo.com/api/reference">Official Vimeo API Docs</a></li>
+<li><a href="https://github.com/SidisLiveYT/node-vimeo.git">Source Code</a></li>
+<li><a href="https://github.com/SidisLiveYT/node-vimeo">GitHub Repo Link</a></li>
+<li><a href="https://www.npmjs.com/package/node-vimeo">NPM Package</a></li>
+<li><a href="https://yarn.pm/node-vimeo">Yarn Package</a></li>
+</ul></article>
+    </section>
+
+
+
+
+
+
+
+</div>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.7</a> on Sun Mar 20 2022 10:47:27 GMT+0000 (Coordinated Universal Time) using <a href="https://github.com/zyrouge/jsdoc-skyceil">Skyceil Theme</a>
+</footer>
+
+<script>prettyPrint();</script>
+<script src="scripts/linenumber.js"></script>
+
+</body>
+</html>

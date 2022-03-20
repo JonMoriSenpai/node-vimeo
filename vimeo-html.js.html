@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Source: vimeo-html.js</title>
+
+    <script src="scripts/prettify/prettify.js"></script>
+    <script src="scripts/prettify/lang-css.js"></script>
+    <script src="scripts/nav.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/skyceil.css">
+    <link type="text/css" rel="stylesheet" href="styles/prettify.css">
+</head>
+
+<body>
+
+<nav class="navbar">
+    <h4><a href="index.html">Home</a></h4><h5 class="no-bottom must-underline">Classes</h5><ul><li><span class="small-icon C">C</span><b><a href="htmlVimeo.html">htmlVimeo</a></b><ul class="has-class-methods"><li><span class="small-icon F">F</span><a href="htmlVimeo.html#.html">html</a></li></ul></li><li><span class="small-icon C">C</span><b><a href="vimeoTrack.html">vimeoTrack</a></b><ul class="has-class-methods"><li><span class="small-icon F">F</span><a href="vimeoTrack.html#.__htmlFetch">__htmlFetch</a></li><li><span class="small-icon F">F</span><a href="vimeoTrack.html#.__test">__test</a></li><li><span class="small-icon F">F</span><a href="vimeoTrack.html#embedHTMl">embedHTMl</a></li><li><span class="small-icon F">F</span><a href="vimeoTrack.html#getStream">getStream</a></li><li><span class="small-icon F">F</span><a href="vimeoTrack.html#parseRaw">parseRaw</a></li><li><span class="small-icon M">M</span><a href="vimeoTrack.html#__playerUrl">__playerUrl</a></li><li><span class="small-icon M">M</span><a href="vimeoTrack.html#__scrapperOptions">__scrapperOptions</a></li><li><span class="small-icon M">M</span><a href="vimeoTrack.html#__vimeoPlayerRegex">__vimeoPlayerRegex</a></li><li><span class="small-icon M">M</span><a href="vimeoTrack.html#__vimeoRegex">__vimeoRegex</a></li><li><span class="small-icon M">M</span><a href="vimeoTrack.html#extraRaw">extraRaw</a></li><li><span class="small-icon M">M</span><a href="vimeoTrack.html#raw">raw</a></li><li><span class="small-icon M">M</span><a href="vimeoTrack.html#rawJSON">rawJSON</a></li><li><span class="small-icon M">M</span><a href="vimeoTrack.html#videoId">videoId</a></li></ul></li></ul>
+</nav>
+
+<div id="main">
+    <div class="burger">
+        <div class="burger-line-1"></div>
+        <div class="burger-line-2"></div>
+        <div class="burger-line-3"></div>
+    </div>
+
+    <h1 class="page-title">Source: vimeo-html.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>const utils = require('../Utils/__defaultUtils.js')
+const vimeoTrack = require('./vimeo-player')
+
+/**
+ * @class htmlVimeo -> Html Vimeo Handler Class for Handling Basic Un-Official Extraction and Parsing of Vimeo Video Metadata and Stream Readable
+ */
+class htmlVimeo extends vimeoTrack {
+  /**
+   * @static
+   * html() -> Html 5 Player Fetch for Vimeo Url
+   * @param {string} rawUrl raw Vimeo Video Url for the Extraction
+   * @param {object} __scrapperOptions scrapping Options for raw Fetch Method
+   * @returns {Promise&lt;vimeoTrack>} Returns Instance of Vimeo with properties of Data
+   */
+  static async html(rawUrl, __scrapperOptions = htmlVimeo.__scrapperOptions) {
+    if (
+      !(
+        rawUrl &amp;&amp;
+        typeof rawUrl === 'string' &amp;&amp;
+        rawUrl !== '' &amp;&amp;
+        htmlVimeo.__test(rawUrl)
+      )
+    )
+      throw new TypeError(
+        'Vimeo Internal Error : Invalid Url is Provided for Extraction',
+      )
+
+    try {
+      __scrapperOptions = {
+        ...htmlVimeo.__scrapperOptions,
+        ...__scrapperOptions,
+        htmlOptions: {
+          ...htmlVimeo.__scrapperOptions?.htmlOptions,
+          ...__scrapperOptions?.htmlOptions,
+        },
+        fetchOptions: {
+          ...htmlVimeo.__scrapperOptions?.fetchOptions,
+          ...__scrapperOptions?.fetchOptions,
+        },
+      }
+      if (
+        htmlVimeo.__vimeoPlayerRegex?.find(
+          (regex) => regex &amp;&amp; regex.test(rawUrl),
+        )
+      )
+        return await htmlVimeo.__htmlFetch(rawUrl, __scrapperOptions)
+      const rawResponse = await utils.__rawfetchBody(
+        rawUrl,
+        __scrapperOptions?.htmlOptions,
+      )
+      if (
+        !(rawResponse &amp;&amp; typeof rawResponse === 'string' &amp;&amp; rawResponse !== '')
+      )
+        return undefined
+
+      const rawJsonResponse = JSON.parse(
+        `{${
+          rawResponse
+            ?.split('&lt;meta ')
+            ?.filter((raw) => raw &amp;&amp; raw?.includes('content='))
+            ?.map((raw) => {
+              try {
+                raw = raw?.split('>')?.[0]
+                if (!(raw &amp;&amp; typeof raw === 'string' &amp;&amp; raw !== ''))
+                  return undefined
+                else if (raw?.startsWith('property=')) {
+                  return (
+                    `${raw
+                      ?.slice(
+                        raw?.indexOf('property=') + 'property='.length,
+                        raw?.indexOf('content='),
+                      )
+                      ?.replace('og:', '')
+                      ?.replace('al:', '')
+                      ?.replace('twitter:', '')
+                      ?.replace(/[~`!@#$%^&amp;*()+={}\[\];:&lt;>.,\/\\\?-_]/g, '_')
+                      ?.trim()
+                    }:${
+                      raw
+                        ?.slice(raw?.indexOf('content=') + 'content='.length)
+                        ?.trim()}`
+                  )
+                } else if (raw?.startsWith('name=')) {
+                  return (
+                    `${raw
+                      ?.slice(
+                        raw?.indexOf('name=') + 'name='.length,
+                        raw?.indexOf('content='),
+                      )
+                      ?.replace('og:', '')
+                      ?.replace('al:', '')
+                      ?.replace('twitter:', '')
+                      ?.replace(/[~`!@#$%^&amp;*()+={}\[\];:&lt;>.,\/\\\?-]/g, '_')
+                      ?.trim()
+                    }:${
+                      raw
+                        ?.slice(raw?.indexOf('content=') + 'content='.length)
+                        ?.trim()}`
+                  )
+                } else return undefined
+              } catch {
+                return undefined
+              }
+            })
+            ?.filter(Boolean)
+            ?.join(',')
+        }}`,
+      )
+      return await htmlVimeo.__htmlFetch(
+        rawJsonResponse?.url,
+        __scrapperOptions,
+        rawJsonResponse,
+      )
+    } catch (rawError) {
+      if (__scrapperOptions?.ignoreError) return utils.__errorHandling(rawError)
+      else throw rawError
+    }
+  }
+}
+module.exports = htmlVimeo
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+
+</div>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.7</a> on Sun Mar 20 2022 10:47:27 GMT+0000 (Coordinated Universal Time) using <a href="https://github.com/zyrouge/jsdoc-skyceil">Skyceil Theme</a>
+</footer>
+
+<script>prettyPrint();</script>
+<script src="scripts/linenumber.js"></script>
+
+</body>
+</html>

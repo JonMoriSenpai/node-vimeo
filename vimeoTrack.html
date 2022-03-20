@@ -1,0 +1,1988 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Class: vimeoTrack</title>
+
+    <script src="scripts/prettify/prettify.js"></script>
+    <script src="scripts/prettify/lang-css.js"></script>
+    <script src="scripts/nav.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/skyceil.css">
+    <link type="text/css" rel="stylesheet" href="styles/prettify.css">
+</head>
+
+<body>
+
+<nav class="navbar">
+    <h4><a href="index.html">Home</a></h4><h5 class="no-bottom must-underline">Classes</h5><ul><li><span class="small-icon C">C</span><b><a href="htmlVimeo.html">htmlVimeo</a></b><ul class="has-class-methods"><li><span class="small-icon F">F</span><a href="htmlVimeo.html#.html">html</a></li></ul></li><li><span class="small-icon C">C</span><b><a href="vimeoTrack.html">vimeoTrack</a></b><ul class="has-class-methods"><li><span class="small-icon F">F</span><a href="vimeoTrack.html#.__htmlFetch">__htmlFetch</a></li><li><span class="small-icon F">F</span><a href="vimeoTrack.html#.__test">__test</a></li><li><span class="small-icon F">F</span><a href="vimeoTrack.html#embedHTMl">embedHTMl</a></li><li><span class="small-icon F">F</span><a href="vimeoTrack.html#getStream">getStream</a></li><li><span class="small-icon F">F</span><a href="vimeoTrack.html#parseRaw">parseRaw</a></li><li><span class="small-icon M">M</span><a href="vimeoTrack.html#__playerUrl">__playerUrl</a></li><li><span class="small-icon M">M</span><a href="vimeoTrack.html#__scrapperOptions">__scrapperOptions</a></li><li><span class="small-icon M">M</span><a href="vimeoTrack.html#__vimeoPlayerRegex">__vimeoPlayerRegex</a></li><li><span class="small-icon M">M</span><a href="vimeoTrack.html#__vimeoRegex">__vimeoRegex</a></li><li><span class="small-icon M">M</span><a href="vimeoTrack.html#extraRaw">extraRaw</a></li><li><span class="small-icon M">M</span><a href="vimeoTrack.html#raw">raw</a></li><li><span class="small-icon M">M</span><a href="vimeoTrack.html#rawJSON">rawJSON</a></li><li><span class="small-icon M">M</span><a href="vimeoTrack.html#videoId">videoId</a></li></ul></li></ul>
+</nav>
+
+<div id="main">
+    <div class="burger">
+        <div class="burger-line-1"></div>
+        <div class="burger-line-2"></div>
+        <div class="burger-line-3"></div>
+    </div>
+
+    <h1 class="page-title">Class: vimeoTrack</h1>
+
+    
+
+
+
+
+<section>
+<header>
+    <hr>
+    
+        <h2><span class="attribs"><span class="type-signature"></span></span>vimeoTrack<span class="signature">(rawResponse, __scrapperOptions, extraContents)</span><span class="type-signature"></span></h2>
+        
+            <div class="class-description"><p>vimeoTrack -&gt; Vimeo Handler Class for Handling Basic Un-Official Extraction and Parsing of Vimeo Video Metadata and Stream Readable</p></div>
+        
+    
+</header>
+
+<article>
+    <div class="container-overview">
+    
+        
+
+    
+    <h2>Constructor</h2>
+    
+
+    
+    <h4 class="name" id="vimeoTrack"><span class="type-signature"></span>new vimeoTrack<span class="signature">(rawResponse, __scrapperOptions, extraContents)</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<div class="table-box">
+    <table class="params">
+        <thead>
+        <tr>
+            
+            <th>Name</th>
+            
+
+            <th>Type</th>
+
+            
+
+            
+
+            <th class="last">Description</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        
+
+            <tr>
+                
+                    <td class="name"><code>rawResponse</code></td>
+                
+
+                <td class="type">
+                
+                    
+<span class="param-type">string</span>
+
+
+                
+                </td>
+
+                
+
+                
+
+                <td class="description last"><p>Response Body like in text or HTML Player's Source Code</p></td>
+            </tr>
+
+        
+
+            <tr>
+                
+                    <td class="name"><code>__scrapperOptions</code></td>
+                
+
+                <td class="type">
+                
+                    
+<span class="param-type">object</span>
+
+
+                
+                </td>
+
+                
+
+                
+
+                <td class="description last"><p>scrapping Options for raw Fetch Method</p></td>
+            </tr>
+
+        
+
+            <tr>
+                
+                    <td class="name"><code>extraContents</code></td>
+                
+
+                <td class="type">
+                
+                    
+<span class="param-type">object</span>
+
+
+                
+                </td>
+
+                
+
+                
+
+                <td class="description last"><p>Extra Contents for Merging for cache in &quot;extra Cache&quot;</p></td>
+            </tr>
+
+        
+        </tbody>
+    </table>
+</div>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="vimeo-player.js.html">vimeo-player.js</a>, <a href="vimeo-player.js.html#line10">line 10</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<hr>
+    
+    </div>
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+        <h3 class="subsection-title">Members</h3>
+
+        
+            
+<h4 class="name" id="__playerUrl"><span class="type-signature"></span>__playerUrl<span class="type-signature"></span></h4>
+
+
+
+
+
+
+
+
+
+
+    <h5 class="subsection-title">Properties:</h5>
+
+    
+
+<div class="table-box">
+    <table class="props">
+        <thead>
+        <tr>
+            
+            <th>Name</th>
+            
+
+            <th>Type</th>
+
+            
+
+            
+
+            <th class="last">Description</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        
+
+            <tr>
+                
+                    <td class="name"><code>__playerUrl</code></td>
+                
+
+                <td class="type">
+                
+                    
+<span class="param-type">string</span>
+|
+
+<span class="param-type">"https://player.vimeo.com/video/"</span>
+
+
+                
+                </td>
+
+                
+
+                
+
+                <td class="description last"><p>Player URL for Extraction of Player Metada and Stream Metadata</p></td>
+            </tr>
+
+        
+        </tbody>
+    </table>
+</div>
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="vimeo-player.js.html">vimeo-player.js</a>, <a href="vimeo-player.js.html#line28">line 28</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+<hr>
+        
+            
+<h4 class="name" id="__scrapperOptions"><span class="type-signature"></span>__scrapperOptions<span class="type-signature"></span></h4>
+
+
+
+
+
+
+
+
+
+
+    <h5 class="subsection-title">Properties:</h5>
+
+    
+
+<div class="table-box">
+    <table class="props">
+        <thead>
+        <tr>
+            
+            <th>Name</th>
+            
+
+            <th>Type</th>
+
+            
+
+            
+
+            <th class="last">Description</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        
+
+            <tr>
+                
+                    <td class="name"><code>__scrapperOptions</code></td>
+                
+
+                <td class="type">
+                
+                    
+<span class="param-type">object</span>
+
+
+                
+                </td>
+
+                
+
+                
+
+                <td class="description last"><p>Default HTML Scrapping and Parsing Options Compilation</p></td>
+            </tr>
+
+        
+        </tbody>
+    </table>
+</div>
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="vimeo-player.js.html">vimeo-player.js</a>, <a href="vimeo-player.js.html#line16">line 16</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+<hr>
+        
+            
+<h4 class="name" id="__vimeoPlayerRegex"><span class="type-signature"></span>__vimeoPlayerRegex<span class="type-signature"></span></h4>
+
+
+
+
+
+
+
+
+
+
+    <h5 class="subsection-title">Properties:</h5>
+
+    
+
+<div class="table-box">
+    <table class="props">
+        <thead>
+        <tr>
+            
+            <th>Name</th>
+            
+
+            <th>Type</th>
+
+            
+
+            
+
+            <th class="last">Description</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        
+
+            <tr>
+                
+                    <td class="name"><code>__vimeoPlayerRegex</code></td>
+                
+
+                <td class="type">
+                
+                    
+<span class="param-type">Array.&lt;Regexp></span>
+
+
+                
+                </td>
+
+                
+
+                
+
+                <td class="description last"><p>Array of Vimeo Player URL Supported Regexes</p></td>
+            </tr>
+
+        
+        </tbody>
+    </table>
+</div>
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="vimeo-player.js.html">vimeo-player.js</a>, <a href="vimeo-player.js.html#line47">line 47</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+<hr>
+        
+            
+<h4 class="name" id="__vimeoRegex"><span class="type-signature"></span>__vimeoRegex<span class="type-signature"></span></h4>
+
+
+
+
+
+
+
+
+
+
+    <h5 class="subsection-title">Properties:</h5>
+
+    
+
+<div class="table-box">
+    <table class="props">
+        <thead>
+        <tr>
+            
+            <th>Name</th>
+            
+
+            <th>Type</th>
+
+            
+
+            
+
+            <th class="last">Description</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        
+
+            <tr>
+                
+                    <td class="name"><code>__vimeoRegex</code></td>
+                
+
+                <td class="type">
+                
+                    
+<span class="param-type">Array.&lt;Regexp></span>
+
+
+                
+                </td>
+
+                
+
+                
+
+                <td class="description last"><p>Array of Vimeo Video URL Supported Regexes</p></td>
+            </tr>
+
+        
+        </tbody>
+    </table>
+</div>
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="vimeo-player.js.html">vimeo-player.js</a>, <a href="vimeo-player.js.html#line35">line 35</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+<hr>
+        
+            
+<h4 class="name" id="extraRaw"><span class="type-signature"></span>extraRaw<span class="type-signature"> :object</span></h4>
+
+
+
+
+<div class="description">
+    <p>Raw Extra Data from HTML Fetches and &lt;response.data&gt; Body and Compiled</p>
+</div>
+
+
+
+    <h5>Type:</h5>
+    <ul>
+        <li>
+            
+<span class="param-type">object</span>
+
+
+        </li>
+    </ul>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="vimeo-player.js.html">vimeo-player.js</a>, <a href="vimeo-player.js.html#line548">line 548</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+<hr>
+        
+            
+<h4 class="name" id="raw"><span class="type-signature"></span>raw<span class="type-signature"> :object</span></h4>
+
+
+
+
+<div class="description">
+    <p>Raw Data from HTML Fetches and &lt;response.data&gt; Body and Compiled</p>
+</div>
+
+
+
+    <h5>Type:</h5>
+    <ul>
+        <li>
+            
+<span class="param-type">object</span>
+
+
+        </li>
+    </ul>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="vimeo-player.js.html">vimeo-player.js</a>, <a href="vimeo-player.js.html#line534">line 534</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+<hr>
+        
+            
+<h4 class="name" id="rawJSON"><span class="type-signature"></span>rawJSON<span class="type-signature"> :object</span></h4>
+
+
+
+
+<div class="description">
+    <p>Raw JSON Data from HTML Fetches and &lt;response.data&gt; Body and Compiled</p>
+</div>
+
+
+
+    <h5>Type:</h5>
+    <ul>
+        <li>
+            
+<span class="param-type">object</span>
+
+
+        </li>
+    </ul>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="vimeo-player.js.html">vimeo-player.js</a>, <a href="vimeo-player.js.html#line541">line 541</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+<hr>
+        
+            
+<h4 class="name" id="videoId"><span class="type-signature"></span>videoId<span class="type-signature"> :string</span></h4>
+
+
+
+
+<div class="description">
+    <p>Vimeo Video's Id Parsed from fetched Url if present</p>
+</div>
+
+
+
+    <h5>Type:</h5>
+    <ul>
+        <li>
+            
+<span class="param-type">string</span>
+
+
+        </li>
+    </ul>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="vimeo-player.js.html">vimeo-player.js</a>, <a href="vimeo-player.js.html#line555">line 555</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+<hr>
+        
+    
+
+    
+        <h3 class="subsection-title">Methods</h3>
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id=".__htmlFetch"><span class="type-signature">(async, static) </span>__htmlFetch<span class="signature">(rawUrl, __scrapperOptions, extraContents)</span><span class="type-signature"> &rarr; {Promise.&lt;<a href="vimeoTrack.html">vimeoTrack</a>>}</span></h4>
+    
+
+    
+
+
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<div class="table-box">
+    <table class="params">
+        <thead>
+        <tr>
+            
+            <th>Name</th>
+            
+
+            <th>Type</th>
+
+            
+
+            
+
+            <th class="last">Description</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        
+
+            <tr>
+                
+                    <td class="name"><code>rawUrl</code></td>
+                
+
+                <td class="type">
+                
+                    
+<span class="param-type">string</span>
+
+
+                
+                </td>
+
+                
+
+                
+
+                <td class="description last"><p>raw Vimeo Video Url for the Extraction</p></td>
+            </tr>
+
+        
+
+            <tr>
+                
+                    <td class="name"><code>__scrapperOptions</code></td>
+                
+
+                <td class="type">
+                
+                    
+<span class="param-type">object</span>
+
+
+                
+                </td>
+
+                
+
+                
+
+                <td class="description last"><p>scrapping Options for raw Fetch Method</p></td>
+            </tr>
+
+        
+
+            <tr>
+                
+                    <td class="name"><code>extraContents</code></td>
+                
+
+                <td class="type">
+                
+                    
+<span class="param-type">object</span>
+
+
+                
+                </td>
+
+                
+
+                
+
+                <td class="description last"><p>Extra Contents to be Added  if placed from Html file Parser</p></td>
+            </tr>
+
+        
+        </tbody>
+    </table>
+</div>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="vimeo-player.js.html">vimeo-player.js</a>, <a href="vimeo-player.js.html#line448">line 448</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    <p>Returns Instance of Vimeo with properties of Data</p>
+</div>
+
+
+
+<ul>
+    <li>
+        Type: <span class="simple-code">
+<span class="param-type">Promise.&lt;<a href="vimeoTrack.html">vimeoTrack</a>></span>
+
+</span>
+    </li>
+</ul>
+
+    
+
+
+
+
+
+<hr>
+        
+            
+
+    
+
+    
+    <h4 class="name" id=".__test"><span class="type-signature">(static) </span>__test<span class="signature">(rawUrl, returnRegex)</span><span class="type-signature"> &rarr; {boolean|RegExpMatchArray}</span></h4>
+    
+
+    
+
+
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<div class="table-box">
+    <table class="params">
+        <thead>
+        <tr>
+            
+            <th>Name</th>
+            
+
+            <th>Type</th>
+
+            
+
+            
+            <th>Default</th>
+            
+
+            <th class="last">Description</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        
+
+            <tr>
+                
+                    <td class="name"><code>rawUrl</code></td>
+                
+
+                <td class="type">
+                
+                    
+<span class="param-type">string</span>
+
+
+                
+                </td>
+
+                
+
+                
+                    <td class="default">
+                    
+                    </td>
+                
+
+                <td class="description last"><p>raw url for checking if its Vimeo Video URL</p></td>
+            </tr>
+
+        
+
+            <tr>
+                
+                    <td class="name"><code>returnRegex</code></td>
+                
+
+                <td class="type">
+                
+                    
+<span class="param-type">boolean</span>
+|
+
+<span class="param-type">'false'</span>
+
+
+                
+                </td>
+
+                
+
+                
+                    <td class="default">
+                    
+                        false
+                    
+                    </td>
+                
+
+                <td class="description last"><p>Boolean Value for if return the residue or results</p></td>
+            </tr>
+
+        
+        </tbody>
+    </table>
+</div>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="vimeo-player.js.html">vimeo-player.js</a>, <a href="vimeo-player.js.html#line88">line 88</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    <p>returns Boolean on success and Regex match Array Data if its requested</p>
+</div>
+
+
+
+<ul>
+    <li>
+        Type: <span class="simple-code">
+<span class="param-type">boolean</span>
+|
+
+<span class="param-type">RegExpMatchArray</span>
+
+</span>
+    </li>
+</ul>
+
+    
+
+
+
+
+
+<hr>
+        
+            
+
+    
+
+    
+    <h4 class="name" id="embedHTMl"><span class="type-signature"></span>embedHTMl<span class="signature">(width, height, frameBorder)</span><span class="type-signature"> &rarr; {string|void}</span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    <p>embedHTMl() -&gt; Embed Frame Method to make a single html code snippet to paste for Embeded HTML Player</p>
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<div class="table-box">
+    <table class="params">
+        <thead>
+        <tr>
+            
+            <th>Name</th>
+            
+
+            <th>Type</th>
+
+            
+
+            
+            <th>Default</th>
+            
+
+            <th class="last">Description</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        
+
+            <tr>
+                
+                    <td class="name"><code>width</code></td>
+                
+
+                <td class="type">
+                
+                    
+<span class="param-type">number</span>
+|
+
+<span class="param-type">string</span>
+|
+
+<span class="param-type">640</span>
+
+
+                
+                </td>
+
+                
+
+                
+                    <td class="default">
+                    
+                        640
+                    
+                    </td>
+                
+
+                <td class="description last"><p>width length of the Player in  Embeded HTML Player Frame</p></td>
+            </tr>
+
+        
+
+            <tr>
+                
+                    <td class="name"><code>height</code></td>
+                
+
+                <td class="type">
+                
+                    
+<span class="param-type">number</span>
+|
+
+<span class="param-type">string</span>
+|
+
+<span class="param-type">360</span>
+
+
+                
+                </td>
+
+                
+
+                
+                    <td class="default">
+                    
+                        360
+                    
+                    </td>
+                
+
+                <td class="description last"><p>height length of the Player in Embeded HTML Player Frame</p></td>
+            </tr>
+
+        
+
+            <tr>
+                
+                    <td class="name"><code>frameBorder</code></td>
+                
+
+                <td class="type">
+                
+                    
+<span class="param-type">number</span>
+|
+
+<span class="param-type">string</span>
+|
+
+<span class="param-type">0</span>
+
+
+                
+                </td>
+
+                
+
+                
+                    <td class="default">
+                    
+                        0
+                    
+                    </td>
+                
+
+                <td class="description last"><p>frameBorder data of the Player in Embeded HTML Player Frame</p></td>
+            </tr>
+
+        
+        </tbody>
+    </table>
+</div>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="vimeo-player.js.html">vimeo-player.js</a>, <a href="vimeo-player.js.html#line513">line 513</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    <p>Returns <frame> Embed Player for HTML pages</p>
+</div>
+
+
+
+<ul>
+    <li>
+        Type: <span class="simple-code">
+<span class="param-type">string</span>
+|
+
+<span class="param-type">void</span>
+
+</span>
+    </li>
+</ul>
+
+    
+
+
+
+
+
+<hr>
+        
+            
+
+    
+
+    
+    <h4 class="name" id="getStream"><span class="type-signature">(async) </span>getStream<span class="signature">(fetchUrl)</span><span class="type-signature"> &rarr; {Promise.&lt;Readable>}</span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    <p>method getStream() -&gt; Fetch Stream Readable</p>
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<div class="table-box">
+    <table class="params">
+        <thead>
+        <tr>
+            
+            <th>Name</th>
+            
+
+            <th>Type</th>
+
+            
+
+            
+
+            <th class="last">Description</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        
+
+            <tr>
+                
+                    <td class="name"><code>fetchUrl</code></td>
+                
+
+                <td class="type">
+                
+                    
+<span class="param-type">string</span>
+
+
+                
+                </td>
+
+                
+
+                
+
+                <td class="description last"><p>Fetch Stream Url or normal Vimeo Video Url</p></td>
+            </tr>
+
+        
+        </tbody>
+    </table>
+</div>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="vimeo-player.js.html">vimeo-player.js</a>, <a href="vimeo-player.js.html#line384">line 384</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    <p>Returns Stream for HTML5 Pages or Web Apps working on Stream Based or pipeing Stuff</p>
+</div>
+
+
+
+<ul>
+    <li>
+        Type: <span class="simple-code">
+<span class="param-type">Promise.&lt;Readable></span>
+
+</span>
+    </li>
+</ul>
+
+    
+
+
+
+
+
+<hr>
+        
+            
+
+    
+
+    
+    <h4 class="name" id="parseRaw"><span class="type-signature"></span>parseRaw<span class="signature">(rawObjects)</span><span class="type-signature"> &rarr; {object}</span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    <p>parseRaw() -&gt; Parse Raw Object/Properties of teh Class or requested Object Variable</p>
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<div class="table-box">
+    <table class="params">
+        <thead>
+        <tr>
+            
+            <th>Name</th>
+            
+
+            <th>Type</th>
+
+            
+
+            
+
+            <th class="last">Description</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        
+
+            <tr>
+                
+                    <td class="name"><code>rawObjects</code></td>
+                
+
+                <td class="type">
+                
+                    
+<span class="param-type">object</span>
+
+
+                
+                </td>
+
+                
+
+                
+
+                <td class="description last"><p>Raw Objects Value to be parsed into meaningfull and cleaned</p></td>
+            </tr>
+
+        
+        </tbody>
+    </table>
+</div>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="vimeo-player.js.html">vimeo-player.js</a>, <a href="vimeo-player.js.html#line154">line 154</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    <p>Return cleaned Object Variable</p>
+</div>
+
+
+
+<ul>
+    <li>
+        Type: <span class="simple-code">
+<span class="param-type">object</span>
+
+</span>
+    </li>
+</ul>
+
+    
+
+
+
+
+
+<hr>
+        
+    
+
+    
+
+    
+</article>
+
+</section>
+
+
+
+
+
+</div>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.7</a> on Sun Mar 20 2022 10:47:27 GMT+0000 (Coordinated Universal Time) using <a href="https://github.com/zyrouge/jsdoc-skyceil">Skyceil Theme</a>
+</footer>
+
+<script>prettyPrint();</script>
+<script src="scripts/linenumber.js"></script>
+
+</body>
+</html>
