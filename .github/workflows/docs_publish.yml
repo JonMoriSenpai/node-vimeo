@@ -25,4 +25,4 @@ jobs:
         with:
           personal_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./docs
-          cname: discord-botlists.js.org
+          cname: node-vimeo.js.org

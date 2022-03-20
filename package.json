@@ -21,7 +21,7 @@
     "lint:fix": "eslint ./src --fix",
     "lint:commit": "npm run lint:fix && npm run commit:push",
     "commit": "git-cz",
-    "semantic-release": "semantic-release --branches master",
+    "semantic-release": "semantic-release --branches main",
     "commit:push": "git add . && npm run commit && git push",
     "test": "node test/testing.js",
     "docs": "jsdoc node_modules/.bin/jsdoc --configure .jsdoc.json --verbose"
