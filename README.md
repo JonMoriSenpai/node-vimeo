@@ -12,6 +12,10 @@
 </p>
 </div>
 
+# About :
+
+_node-vimeo is an Un-Official Nodejs-Vimeo Wrapper for Parsing/Scrapping HTML Page of Vimeo Videos/Channels/Groups and many more related to Vimeo , The Wrapper helps for making a smooth API Call endpoints too for fetching Data from Official Vimeo API using client ID and client Secret_
+
 ## Installation
 
 ### Install **[node-vimeo](https://npmjs.com/package/node-vimeo)**
@@ -28,7 +32,7 @@ $ npm install --save node-vimeo
 - Custom Vimeo Wrapper and have many functions to fetch data
 - Better Error Handlers and Request Handlers
 - Api EndPoints Support (soon)
-- User Fetch Data Support (soon)
+- User/Group Fetch Data Support (soon)
 
 ### [Documentation](https://node-vimeo.js.org/)
 
@@ -191,8 +195,15 @@ new Promise(async () => {
 });
 ```
 
+### Credits :
+
+- **We are thanking [@vimeo](https://vimeo.com) for Providing a great Platform for Songs Creators and Song Lovers**
+- **We are not Working Under or Collaborating with [Official Vimeo](https://vimeo.com) for the `node-vimeo` Wrapper**
+
 ## Links
 
+- [Vimeo Website](https://vimeo.com)
+- [Official Vimeo API Docs](https://developer.vimeo.com/api/reference)
 - [Source Code](https://github.com/SidisLiveYT/node-vimeo.git)
 - [GitHub Repo Link](https://github.com/SidisLiveYT/node-vimeo)
 - [NPM Package](https://www.npmjs.com/package/node-vimeo)
