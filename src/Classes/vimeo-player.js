@@ -1,8 +1,8 @@
-const utils = require('../Utils/__defaultUtils.js')
 const https = require('https')
 const http = require('http')
 const { Readable } = require('stream')
 const prettyMS = require('pretty-ms')
+const utils = require('../Utils/__defaultUtils.js')
 
 /**
  * @class vimeoTrack -> Vimeo Handler Class for Handling Basic Un-Official Extraction and Parsing of Vimeo Video Metadata and Stream Readable
@@ -72,7 +72,7 @@ class vimeoTrack {
   ) {
     this.#__private = {
       __raw: rawResponse,
-      __scrapperOptions: __scrapperOptions,
+      __scrapperOptions,
       __rawExtra: extraContents,
     }
     this.#__patch(rawResponse, false, extraContents)
@@ -91,8 +91,8 @@ class vimeoTrack {
       return returnRegex &&
         Boolean(vimeoTrack.__vimeoRegex.find((regExp) => regExp.test(rawUrl)))
         ? rawUrl?.match(
-            vimeoTrack.__vimeoRegex.find((regExp) => rawUrl.match(regExp)),
-          ) ?? false
+          vimeoTrack.__vimeoRegex.find((regExp) => rawUrl.match(regExp)),
+        ) ?? false
         : Boolean(vimeoTrack.__vimeoRegex.find((regExp) => regExp.test(rawUrl)))
     } catch {
       return false
@@ -116,7 +116,7 @@ class vimeoTrack {
           'Vimeo Internal Error : Invalid Response is Fetched from Axios.get()',
         )
 
-      let rawJsonData = JSON.parse(
+      const rawJsonData = JSON.parse(
         rawResponse
           ?.split('<script> (function(document, player) { var config = ')?.[1]
           ?.split(';')?.[0],
@@ -125,9 +125,8 @@ class vimeoTrack {
         throw new TypeError(
           'Vimeo Internal Error : Invalid Response JSON is Parsed',
         )
-      let __rawStreamData = rawJsonData?.request?.files?.progressive?.find(
-        (stream) =>
-          stream?.url && typeof stream?.url === 'string' && stream?.url !== '',
+      const __rawStreamData = rawJsonData?.request?.files?.progressive?.find(
+        (stream) => stream?.url && typeof stream?.url === 'string' && stream?.url !== '',
       )
       this.#__private.__rawJSON = {
         ...this.__private?.__rawJSON,
@@ -135,7 +134,7 @@ class vimeoTrack {
         ...extraContents,
         stream: __rawStreamData,
       }
-      let __cookedStructure = this.#__private?.__scrapperOptions?.parseRaw
+      const __cookedStructure = this.#__private?.__scrapperOptions?.parseRaw
         ? this.parseRaw()
         : this.#__private.__rawJSON
       if (!returnOnly) Object.assign(this, __cookedStructure)
@@ -156,18 +155,18 @@ class vimeoTrack {
     try {
       if (!(rawObjects && typeof rawObjects === 'object' && rawObjects !== {}))
         return undefined
-      let __rawEntries = Object.entries(rawObjects),
-        cookedStructure = {}
-      cookedStructure['title'] = __rawEntries?.find(
+      const __rawEntries = Object.entries(rawObjects)
+      const cookedStructure = {}
+      cookedStructure.title = __rawEntries?.find(
         (raw) => raw?.[0] && raw?.[0]?.trim() === 'title' && raw?.[1],
       )?.[1]
-      cookedStructure['url'] = __rawEntries?.find(
+      cookedStructure.url = __rawEntries?.find(
         (raw) => raw?.[0] && raw?.[0]?.trim() === 'url' && raw?.[1],
       )?.[1]
-      cookedStructure['description'] = __rawEntries?.find(
+      cookedStructure.description = __rawEntries?.find(
         (raw) => raw?.[0] && raw?.[0]?.trim() === 'description' && raw?.[1],
       )?.[1]
-      cookedStructure['duration'] = {
+      cookedStructure.duration = {
         ms:
           parseInt(
             __rawEntries?.find(
@@ -182,26 +181,26 @@ class vimeoTrack {
           ) * 1000,
         ),
       }
-      cookedStructure['thumbnails'] = __rawEntries?.find(
+      cookedStructure.thumbnails = __rawEntries?.find(
         (raw) => raw?.[0] && raw?.[0]?.trim() === 'thumbs' && raw?.[1],
       )?.[1]
-      cookedStructure['author'] = {
+      cookedStructure.author = {
         type: __rawEntries?.find(
           (raw) => raw?.[0] && raw?.[0]?.trim() === 'owner' && raw?.[1],
-        )?.[1]?.['account_type'],
+        )?.[1]?.account_type,
         name: __rawEntries?.find(
           (raw) => raw?.[0] && raw?.[0]?.trim() === 'owner' && raw?.[1],
-        )?.[1]?.['name'],
+        )?.[1]?.name,
         url: __rawEntries?.find(
           (raw) => raw?.[0] && raw?.[0]?.trim() === 'owner' && raw?.[1],
-        )?.[1]?.['url'],
+        )?.[1]?.url,
         images: {
           normal: __rawEntries?.find(
             (raw) => raw?.[0] && raw?.[0]?.trim() === 'owner' && raw?.[1],
-          )?.[1]?.['img'],
+          )?.[1]?.img,
           normal2X: __rawEntries?.find(
             (raw) => raw?.[0] && raw?.[0]?.trim() === 'owner' && raw?.[1],
-          )?.[1]?.['img_2x'],
+          )?.[1]?.img_2x,
         },
         authorId:
           __rawEntries?.find(
@@ -209,47 +208,47 @@ class vimeoTrack {
           )?.[1] ??
           __rawEntries?.find(
             (raw) => raw?.[0] && raw?.[0]?.trim() === 'owner' && raw?.[1],
-          )?.[1]?.['id'],
+          )?.[1]?.id,
       }
-      cookedStructure['trackId'] = __rawEntries?.find(
+      cookedStructure.trackId = __rawEntries?.find(
         (raw) => raw?.[0] && raw?.[0]?.trim() === 'id' && raw?.[1],
       )?.[1]
-      cookedStructure['privacy'] = __rawEntries?.find(
+      cookedStructure.privacy = __rawEntries?.find(
         (raw) => raw?.[0] && raw?.[0]?.trim() === 'privacy' && raw?.[1],
       )?.[1]
-      cookedStructure['language'] = __rawEntries?.find(
+      cookedStructure.language = __rawEntries?.find(
         (raw) => raw?.[0] && raw?.[0]?.trim() === 'lang' && raw?.[1],
       )?.[1]
-      cookedStructure['shareURL'] = __rawEntries?.find(
+      cookedStructure.shareURL = __rawEntries?.find(
         (raw) => raw?.[0] && raw?.[0]?.trim() === 'share_url' && raw?.[1],
       )?.[1]
-      cookedStructure['isLive'] = !!__rawEntries?.find(
+      cookedStructure.isLive = !!__rawEntries?.find(
         (raw) => raw?.[0] && raw?.[0]?.trim() === 'live_event' && raw?.[1],
       )?.[1]
-      cookedStructure['streamMetadata'] = {
+      cookedStructure.streamMetadata = {
         type: __rawEntries?.find(
           (raw) => raw?.[0] && raw?.[0]?.trim() === 'stream' && raw?.[1],
-        )?.[1]?.['mime'],
+        )?.[1]?.mime,
         width: __rawEntries?.find(
           (raw) => raw?.[0] && raw?.[0]?.trim() === 'stream' && raw?.[1],
-        )?.[1]?.['width'],
+        )?.[1]?.width,
         height: __rawEntries?.find(
           (raw) => raw?.[0] && raw?.[0]?.trim() === 'stream' && raw?.[1],
-        )?.[1]?.['height'],
+        )?.[1]?.height,
         fps: __rawEntries?.find(
           (raw) => raw?.[0] && raw?.[0]?.trim() === 'stream' && raw?.[1],
-        )?.[1]?.['fps'],
+        )?.[1]?.fps,
         quality: __rawEntries?.find(
           (raw) => raw?.[0] && raw?.[0]?.trim() === 'stream' && raw?.[1],
-        )?.[1]?.['quality'],
+        )?.[1]?.quality,
         streamUrl: __rawEntries?.find(
           (raw) => raw?.[0] && raw?.[0]?.trim() === 'stream' && raw?.[1],
-        )?.[1]?.['url'],
+        )?.[1]?.url,
         buffer: __rawEntries?.find(
           (raw) => raw?.[0] && raw?.[0]?.trim() === 'stream' && raw?.[1],
-        )?.[1]?.['buffer'],
+        )?.[1]?.buffer,
       }
-      cookedStructure['htmlPlayer'] = {
+      cookedStructure.htmlPlayer = {
         url: __rawEntries?.find(
           (raw) => raw?.[0] && raw?.[0]?.trim() === 'player' && raw?.[1],
         )?.[1],
@@ -259,6 +258,115 @@ class vimeoTrack {
         height: __rawEntries?.find(
           (raw) => raw?.[0] && raw?.[0]?.trim() === 'player_height' && raw?.[1],
         )?.[1],
+      }
+      cookedStructure.mobile = {
+        ios: {
+          appName: __rawEntries?.find(
+            (raw) => raw?.[0] && raw?.[0]?.trim() === 'ios_app_name' && raw?.[1],
+          )?.[1],
+          appStoreId: __rawEntries?.find(
+            (raw) => raw?.[0] && raw?.[0]?.trim() === 'ios_app_store_id' && raw?.[1],
+          )?.[1],
+          url: __rawEntries?.find(
+            (raw) => raw?.[0] && raw?.[0]?.trim() === 'ios_url' && raw?.[1],
+          )?.[1],
+        },
+        android: {
+          appName: __rawEntries?.find(
+            (raw) => raw?.[0] && raw?.[0]?.trim() === 'android_app_name' && raw?.[1],
+          )?.[1],
+          package: __rawEntries?.find(
+            (raw) => raw?.[0] && raw?.[0]?.trim() === 'android_package' && raw?.[1],
+          )?.[1],
+          url: __rawEntries?.find(
+            (raw) => raw?.[0] && raw?.[0]?.trim() === 'android_url' && raw?.[1],
+          )?.[1],
+        },
+        extraApp: {
+          iphone: {
+            name: __rawEntries?.find(
+              (raw) => raw?.[0] && raw?.[0]?.trim() === 'app_name_iphone' && raw?.[1],
+            )?.[1],
+            id: __rawEntries?.find(
+              (raw) => raw?.[0] && raw?.[0]?.trim() === 'app_id_iphone' && raw?.[1],
+            )?.[1],
+            url: __rawEntries?.find(
+              (raw) => raw?.[0] && raw?.[0]?.trim() === 'app_url_iphone' && raw?.[1],
+            )?.[1],
+          },
+          ipad: {
+            name: __rawEntries?.find(
+              (raw) => raw?.[0] && raw?.[0]?.trim() === 'app_name_ipad' && raw?.[1],
+            )?.[1],
+            id: __rawEntries?.find(
+              (raw) => raw?.[0] && raw?.[0]?.trim() === 'app_id_ipad' && raw?.[1],
+            )?.[1],
+            url: __rawEntries?.find(
+              (raw) => raw?.[0] && raw?.[0]?.trim() === 'app_url_ipad' && raw?.[1],
+            )?.[1],
+          },
+          googlePlay: {
+            name: __rawEntries?.find(
+              (raw) => raw?.[0] &&
+                raw?.[0]?.trim() === 'app_name_googleplay' &&
+                raw?.[1],
+            )?.[1],
+            id: __rawEntries?.find(
+              (raw) => raw?.[0] &&
+                raw?.[0]?.trim() === 'app_id_googleplay' &&
+                raw?.[1],
+            )?.[1],
+            url: __rawEntries?.find(
+              (raw) => raw?.[0] &&
+                raw?.[0]?.trim() === 'app_url_googleplay' &&
+                raw?.[1],
+            )?.[1],
+          },
+        },
+      }
+      cookedStructure.metadata = {
+        video: {
+          url: __rawEntries?.find(
+            (raw) => raw?.[0] && raw?.[0]?.trim() === 'video_url' && raw?.[1],
+          )?.[1],
+          secureUrl: __rawEntries?.find(
+            (raw) => raw?.[0] && raw?.[0]?.trim() === 'video_secure_url' && raw?.[1],
+          )?.[1],
+          type: __rawEntries?.find(
+            (raw) => raw?.[0] && raw?.[0]?.trim() === 'video_type' && raw?.[1],
+          )?.[1],
+          width: __rawEntries?.find(
+            (raw) => raw?.[0] && raw?.[0]?.trim() === 'video_width' && raw?.[1],
+          )?.[1],
+          height: __rawEntries?.find(
+            (raw) => raw?.[0] && raw?.[0]?.trim() === 'video_height' && raw?.[1],
+          )?.[1],
+        },
+        overlayImage: {
+          url: __rawEntries?.find(
+            (raw) => raw?.[0] && raw?.[0]?.trim() === 'image' && raw?.[1],
+          )?.[1],
+          secureUrl: __rawEntries?.find(
+            (raw) => raw?.[0] && raw?.[0]?.trim() === 'image_secure_url' && raw?.[1],
+          )?.[1],
+          type: __rawEntries?.find(
+            (raw) => raw?.[0] && raw?.[0]?.trim() === 'image_type' && raw?.[1],
+          )?.[1],
+          width: __rawEntries?.find(
+            (raw) => raw?.[0] && raw?.[0]?.trim() === 'image_width' && raw?.[1],
+          )?.[1],
+          height: __rawEntries?.find(
+            (raw) => raw?.[0] && raw?.[0]?.trim() === 'image_height' && raw?.[1],
+          )?.[1],
+        },
+        updatedTime: __rawEntries?.find(
+          (raw) => raw?.[0] && raw?.[0]?.trim() === 'updated_time' && raw?.[1],
+        )?.[1],
+        otherTags: __rawEntries
+          ?.filter(
+            (raw) => raw?.[0] && raw?.[0]?.trim() === 'video_other_tag' && raw?.[1],
+          )
+          ?.map((raw) => raw?.[1]),
       }
       return cookedStructure
     } catch (rawError) {
@@ -273,7 +381,9 @@ class vimeoTrack {
    * @param {string} fetchUrl Fetch Stream Url or normal Vimeo Video Url
    * @returns {Promise<Readable>} Returns Stream for HTML5 Pages or Web Apps working on Stream Based or pipeing Stuff
    */
-  async getStream(fetchUrl = this.streamMetadata?.url ?? this.url ?? this?.video_url) {
+  async getStream(
+    fetchUrl = this.streamMetadata?.url ?? this.url ?? this?.video_url,
+  ) {
     try {
       if (!(fetchUrl && typeof fetchUrl === 'string' && fetchUrl !== ''))
         throw new TypeError(
@@ -287,10 +397,10 @@ class vimeoTrack {
         )
       ) {
         if (!utils.__vimeoVideoIdParser(fetchUrl)) return undefined
-        let rawResponse = await utils.__rawfetchBody(
+        const rawResponse = await utils.__rawfetchBody(
           vimeoTrack.__playerUrl +
             (utils.__vimeoVideoIdParser(fetchUrl) ??
-              this.videoid ??
+              this.videoId ??
               this.trackId),
           this.#__private?.__scrapperOptions?.htmlOptions,
         )
@@ -326,6 +436,7 @@ class vimeoTrack {
       else throw rawError
     }
   }
+
   /**
    * @static
    * __htmlFetch() -> Html 5 Player Fetch for Vimeo Url
@@ -368,7 +479,7 @@ class vimeoTrack {
       )
         ? rawUrl
         : vimeoTrack.__playerUrl + utils.__vimeoVideoIdParser(rawUrl)
-      let rawResponse = await utils.__rawfetchBody(
+      const rawResponse = await utils.__rawfetchBody(
         rawUrl,
         __scrapperOptions?.htmlOptions,
       )
@@ -378,7 +489,7 @@ class vimeoTrack {
         throw new TypeError(
           'Vimeo Internal Error : Invalid Response is Fetched from Axios.get()',
         )
-      let rawVimeo = new vimeoTrack(
+      const rawVimeo = new vimeoTrack(
         rawResponse,
         __scrapperOptions,
         extraContents,
@@ -407,16 +518,14 @@ class vimeoTrack {
     )
       return undefined
     else
-      this.#__private?.__rawJSON?.embed_code ??
-        `<iframe title="vimeo-player" src="` +
-          (this.htmlPlayer?.url ?? this.#__private?.__rawExtra?.player) +
-          `" width="` +
-          width +
-          `" height="` +
-          height +
-          `" frameborder="` +
-          (frameBorder ?? 0) +
-          `" allowfullscreen></iframe>`
+      return (
+        this.#__private?.__rawJSON?.embed_code ??
+        `<iframe title="vimeo-player" src="${
+          this.htmlPlayer?.url ?? this.#__private?.__rawExtra?.player
+        }" width="${width}" height="${height}" frameborder="${
+          frameBorder ?? 0
+        }" allowfullscreen></iframe>`
+      )
   }
 
   /**
@@ -425,12 +534,14 @@ class vimeoTrack {
   get raw() {
     return this.#__private?.__raw
   }
+
   /**
    * @type {object} Raw JSON Data from HTML Fetches and <response.data> Body and Compiled
    */
   get rawJSON() {
     return this.#__private?.__rawJSON
   }
+
   /**
    * @type {object} Raw Extra Data from HTML Fetches and <response.data> Body and Compiled
    */
@@ -441,7 +552,7 @@ class vimeoTrack {
   /**
    * @type {string} Vimeo Video's Id Parsed from fetched Url if present
    */
-  get videoid() {
+  get videoId() {
     if (!this.url) return undefined
     else return utils.__vimeoVideoIdParser(this.url, vimeoTrack.__vimeoRegex)
   }

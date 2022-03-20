@@ -44,7 +44,7 @@ class htmlVimeo extends vimeoTrack {
         )
       )
         return await htmlVimeo.__htmlFetch(rawUrl, __scrapperOptions)
-      let rawResponse = await utils.__rawfetchBody(
+      const rawResponse = await utils.__rawfetchBody(
         rawUrl,
         __scrapperOptions?.htmlOptions,
       )
@@ -53,49 +53,49 @@ class htmlVimeo extends vimeoTrack {
       )
         return undefined
 
-      let rawJsonResponse = JSON.parse(
-        `{` +
+      const rawJsonResponse = JSON.parse(
+        `{${
           rawResponse
             ?.split('<meta ')
             ?.filter((raw) => raw && raw?.includes('content='))
             ?.map((raw) => {
               try {
-                raw = raw?.split(`>`)?.[0]
+                raw = raw?.split('>')?.[0]
                 if (!(raw && typeof raw === 'string' && raw !== ''))
                   return undefined
                 else if (raw?.startsWith('property=')) {
                   return (
-                    raw
+                    `${raw
                       ?.slice(
-                        raw?.indexOf('property=') + `property=`.length,
+                        raw?.indexOf('property=') + 'property='.length,
                         raw?.indexOf('content='),
                       )
                       ?.replace('og:', '')
                       ?.replace('al:', '')
                       ?.replace('twitter:', '')
                       ?.replace(/[~`!@#$%^&*()+={}\[\];:<>.,\/\\\?-_]/g, '_')
-                      ?.trim() +
-                    `:` +
-                    raw
-                      ?.slice(raw?.indexOf('content=') + `content=`.length)
                       ?.trim()
+                    }:${
+                      raw
+                        ?.slice(raw?.indexOf('content=') + 'content='.length)
+                        ?.trim()}`
                   )
                 } else if (raw?.startsWith('name=')) {
                   return (
-                    raw
+                    `${raw
                       ?.slice(
-                        raw?.indexOf('name=') + `name=`.length,
+                        raw?.indexOf('name=') + 'name='.length,
                         raw?.indexOf('content='),
                       )
                       ?.replace('og:', '')
                       ?.replace('al:', '')
                       ?.replace('twitter:', '')
                       ?.replace(/[~`!@#$%^&*()+={}\[\];:<>.,\/\\\?-]/g, '_')
-                      ?.trim() +
-                    `:` +
-                    raw
-                      ?.slice(raw?.indexOf('content=') + `content=`.length)
                       ?.trim()
+                    }:${
+                      raw
+                        ?.slice(raw?.indexOf('content=') + 'content='.length)
+                        ?.trim()}`
                   )
                 } else return undefined
               } catch {
@@ -103,11 +103,11 @@ class htmlVimeo extends vimeoTrack {
               }
             })
             ?.filter(Boolean)
-            ?.join(',') +
-          `}`,
+            ?.join(',')
+        }}`,
       )
       return await htmlVimeo.__htmlFetch(
-        rawJsonResponse?.['url'],
+        rawJsonResponse?.url,
         __scrapperOptions,
         rawJsonResponse,
       )

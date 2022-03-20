@@ -7,9 +7,7 @@
     "include": [
       "package.json",
       "README.md",
-      "src/Classes",
-      "src/Structures",
-      "src/types/interfaces.js"
+      "src/Classes"
     ],
     "includePattern": ".js$",
     "excludePattern": "(node_modules/|docs|tests/)"

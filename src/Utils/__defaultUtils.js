@@ -47,16 +47,17 @@ class utils {
 
   static __cacheTemp(
     rawData,
-    fileName = 'caches-' +
-      parseInt(Math.floor(Math.random() * 100)) +
-      '-i.html',
+    fileName = `caches-${
+      parseInt(Math.floor(Math.random() * 100))
+    }-i.html`,
   ) {
     if (!fileSystem.existsSync(path.join(__dirname, '/../cache')))
       fileSystem.mkdirSync(path.join(__dirname, '/../cache'))
-    const __cacheLocation = path.join(__dirname, '/../cache', '/' + fileName)
+    const __cacheLocation = path.join(__dirname, '/../cache', `/${fileName}`)
     if (!__cacheLocation) return undefined
     return fileSystem.writeFileSync(__cacheLocation, rawData)
   }
+
   static __errorHandling(error = new Error()) {
     if (!error?.message) return undefined
     if (!fileSystem.existsSync(path.join(__dirname, '/../cache')))
@@ -80,10 +81,10 @@ class utils {
     ) {
       fileSystem.appendFileSync(
         __cacheLocation,
-        ((fileSystem.readFileSync(__cacheLocation)?.length ?? 0) > 100
-          ? `\n\n`
-          : '') +
-          `${new Date()} | ` +
+        `${(fileSystem.readFileSync(__cacheLocation)?.length ?? 0) > 100
+          ? '\n\n'
+          : ''
+        }${new Date()} | ` +
           `\n ErrorMessage: ${error?.message ?? `${error}`}\n ErrorStack: ${
             error?.stack ?? 'Unknown-Stack'
           }`,
@@ -125,10 +126,8 @@ class utils {
         Array.isArray(videoRegex) &&
         videoRegex?.length > 0
       ) {
-        let desiredRegex = videoRegex?.find((rawRegex) =>
-          rawUrl?.match(rawRegex)?.pop(),
-        )
-        let rawVideoId = rawUrl?.match(desiredRegex)?.pop()
+        const desiredRegex = videoRegex?.find((rawRegex) => rawUrl?.match(rawRegex)?.pop())
+        const rawVideoId = rawUrl?.match(desiredRegex)?.pop()
         if (!(rawVideoId && !Number.isNaN(rawVideoId))) return undefined
         else return parseInt(rawVideoId)
       } else return undefined
