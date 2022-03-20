@@ -1,6 +1,6 @@
 import { Readable } from 'stream'
 
-type scrapperOptions = {
+declare type scrapperOptions = {
   htmlOptions: object
   fetchOptions: { fetchStreamReadable: boolean | 'true' }
   ignoreError: boolean | 'true'
@@ -15,7 +15,7 @@ declare class vimeoTrack {
   public getStream(fetchUrl: string | void): Promise<Readable>
 }
 
-declare class vimeo {
+export declare class vimeo {
   public static readonly __scrapperOptions: scrapperOptions
   public static readonly __vimeoRegex: RegExp[]
   public static readonly __vimeoPlayerRegex: RegExp[]
@@ -29,7 +29,12 @@ declare class vimeo {
     returnRegex: boolean | 'false',
   ): boolean | RegExpMatchArray
 }
-export default vimeo
+
+declare const _default: {
+  vimeo: typeof vimeo
+  html: typeof vimeo.html
+}
+export default _default
 export function html(
   rawUrl: string,
   __scrapperOptions: scrapperOptions,

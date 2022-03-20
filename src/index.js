@@ -1,3 +1,7 @@
-const vimeoHTML = require('./Classes/vimeo-html')
+const vimeoHTML = require('../src copy/Classes/vimeo-html')
 
-module.exports = { vimeo: vimeoHTML, html: vimeoHTML.html }
+module.exports = {
+  default: { vimeo: vimeoHTML, html: vimeoHTML.html },
+  vimeo: vimeoHTML,
+  html: vimeoHTML.html,
+}
