@@ -100,18 +100,41 @@ class utils {
     }
     return true
   }
-  static __customParser(getVideoId, parseHTMLObjects) {
-    if (
-      getVideoId &&
-      ['string', 'number'].includes(typeof getVideoId) &&
-      getVideoId !== ''
-    ) {
-      let rawVideoId = getVideoId?.split('/')?.filter(Boolean)?.pop()
-      if (!(rawVideoId && !Number.isNaN(rawVideoId))) return undefined
-      else return parseInt(rawVideoId)
-    } else if (parseHTMLObjects?.rawObject) {
-      
-    } else return undefined
+
+  /**
+   * @static __vimeoVideoIdParser() -> parsing Vimeo Supported URls to fetch Video Id
+   * @param {string} rawUrl raw Vimeo Video Url to be parsed
+   * @param {RegExp[]} videoRegex Array of Regex for matching and parsing
+   * @returns {number} Returns Video Id in number using parseInt
+   */
+  static __vimeoVideoIdParser(
+    rawUrl,
+    videoRegex = [
+      /(http|https)?:\/\/(www\.|player\.)?vimeo\.com\/(?:channels\/(?:\w+\/)?|groups\/([^/]*)\/videos\/|video\/|)(\d+)(?:|\/\?)/,
+      /(https?:\/\/)?(www\.)?(player\.)?vimeo\.com\/?(showcase\/)*([0-9))([a-z]*\/)*([0-9]{6,11})[?]?.*/,
+      /(?:http:|https:|)\/\/(?:player.|www.)?vimeo\.com\/(?:video\/|embed\/|watch\?\S*v=|v\/)?(\d*)/g,
+      /((http|https)?:\/\/(?:[\w\-\_]+\.))+(player+\.)vimeo\.com/g,
+    ],
+  ) {
+    try {
+      if (
+        rawUrl &&
+        ['string', 'number'].includes(typeof rawUrl) &&
+        rawUrl !== '' &&
+        videoRegex &&
+        Array.isArray(videoRegex) &&
+        videoRegex?.length > 0
+      ) {
+        let desiredRegex = videoRegex?.find((rawRegex) =>
+          rawUrl?.match(rawRegex)?.pop(),
+        )
+        let rawVideoId = rawUrl?.match(desiredRegex)?.pop()
+        if (!(rawVideoId && !Number.isNaN(rawVideoId))) return undefined
+        else return parseInt(rawVideoId)
+      } else return undefined
+    } catch {
+      return undefined
+    }
   }
 }
 

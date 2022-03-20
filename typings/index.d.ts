@@ -4,6 +4,7 @@ type scrapperOptions = {
   htmlOptions: object
   fetchOptions: { fetchStreamReadable: boolean | 'true' }
   ignoreError: boolean | 'true'
+  parseRaw: boolean | 'true'
 }
 declare class vimeoTrack {
   public get videoId(): string | void

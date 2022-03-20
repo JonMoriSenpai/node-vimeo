@@ -54,6 +54,7 @@
     "http": "^0.0.1-security",
     "https": "^1.0.0",
     "path": "^0.12.7",
+    "pretty-ms": "^7.0.1",
     "stream": "^0.0.2"
   },
   "directories": {

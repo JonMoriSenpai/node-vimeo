@@ -38,6 +38,12 @@ class htmlVimeo extends vimeoTrack {
           ...__scrapperOptions?.fetchOptions,
         },
       }
+      if (
+        htmlVimeo.__vimeoPlayerRegex?.find(
+          (regex) => regex && regex.test(rawUrl),
+        )
+      )
+        return await htmlVimeo.__htmlFetch(rawUrl, __scrapperOptions)
       let rawResponse = await utils.__rawfetchBody(
         rawUrl,
         __scrapperOptions?.htmlOptions,
@@ -100,7 +106,6 @@ class htmlVimeo extends vimeoTrack {
             ?.join(',') +
           `}`,
       )
-
       return await htmlVimeo.__htmlFetch(
         rawJsonResponse?.['url'],
         __scrapperOptions,

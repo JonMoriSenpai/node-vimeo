@@ -116,7 +116,7 @@ vimeoTrack {
   privacy: 'anybody',
   bypass_token: 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJjbGlwX2lkIjoyNDY2NjA1NjMsImV4cCI6MTY0NzcxNjQ2MH0.gBg4bSdNe-DuA_jGxaNGbOiPu0XNv81oOUFyOiUDuzM',
   unlisted_hash: null,
-  stream: {
+  streamMetadata: {
     profile: '175',
     width: 1920,
     mime: 'video/mp4',
@@ -132,17 +132,62 @@ vimeoTrack {
 }
 ```
 
+#### Parsed Vimeo Track:
+
+```js
+vimeoTrack {
+  title: 'Inledning - grupputbildning',
+  url: 'https://vimeo.com/407943692',
+  description: 'Inledning. Visas i gruputbildning i M&ouml;ts &amp; L&auml;r. Grupputbildning_Inledning_1920x1080_200414_1',
+  duration: { ms: 143000, readable: '2m 23s' },
+  thumbnails: {
+    '640': 'https://i.vimeocdn.com/video/878726798-c9b0aef95da3925a23007ec8ff865fef23d6d6fe45fab8054af4d80b1b5404ca-d_640',
+    '960': 'https://i.vimeocdn.com/video/878726798-c9b0aef95da3925a23007ec8ff865fef23d6d6fe45fab8054af4d80b1b5404ca-d_960',
+    '1280': 'https://i.vimeocdn.com/video/878726798-c9b0aef95da3925a23007ec8ff865fef23d6d6fe45fab8054af4d80b1b5404ca-d_1280',
+    base: 'https://i.vimeocdn.com/video/878726798-c9b0aef95da3925a23007ec8ff865fef23d6d6fe45fab8054af4d80b1b5404ca-d'
+  },
+  author: {
+    type: 'live_premium',
+    name: 'STR',
+    url: 'https://vimeo.com/user32313364',
+    images: {
+      normal: 'https://i.vimeocdn.com/portrait/9653276_60x60.jpg',
+      normal2X: 'https://i.vimeocdn.com/portrait/9653276_120x120.jpg'
+    },
+    authorId: 32313364
+  },
+  trackId: 407943692,
+  privacy: 'anybody',
+  language: undefined,
+  shareURL: 'https://vimeo.com/407943692',
+  isLive: false,
+  streamMetadata: {
+    type: 'video/mp4',
+    width: 1280,
+    height: 720,
+    fps: 25,
+    quality: '720p',
+    streamUrl: 'https://vod-progressive.akamaized.net/exp=1647765700~acl=%2Fvimeo-prod-skyfire-std-us%2F01%2F1588%2F16%2F407943692%2F1747941996.mp4~hmac=ce8dce3557fcb29616793286f0912592a6b542137cbfaf844d1e27cb49174e51/vimeo-prod-skyfire-std-us/01/1588/16/407943692/1747941996.mp4',
+    buffer: StreamReadable
+  },
+  htmlPlayer: {
+    url: 'https://player.vimeo.com/video/407943692?h=04cd636c18',
+    width: '1280',
+    height: '720'
+  }
+}
+```
+
 ### Example :
 
 ```js
 const { vimeo } = require("node-vimeo");
 
 new Promise(async () => {
-  console.log(
-    await vimeo.html("https://vimeo.com/246660563", {
-      fetchOptions: { fetchStreamReadable: true },
-    })
-  );
+  let rawVimeoTrack = await vimeo.html("https://vimeo.com/246660563", {
+    fetchOptions: { fetchStreamReadable: true },
+  });
+  resolve(rawVimeoTrack);
 });
 ```
 
