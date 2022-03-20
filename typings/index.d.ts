@@ -10,11 +10,16 @@ declare class vimeoTrack {
   public get videoId(): string | void
   public get raw(): object | void
   public get extraRaw(): object | void
+  public get rawJSON(): object | void
+  public parseRaw(rawObjects: object | void): object | void
   public getStream(fetchUrl: string | void): Promise<Readable>
 }
 
 declare class vimeo {
   public static readonly __scrapperOptions: scrapperOptions
+  public static readonly __vimeoRegex: RegExp[]
+  public static readonly __vimeoPlayerRegex: RegExp[]
+  public static readonly __playerUrl: string
   public static html(
     rawUrl: string,
     __scrapperOptions: scrapperOptions,
